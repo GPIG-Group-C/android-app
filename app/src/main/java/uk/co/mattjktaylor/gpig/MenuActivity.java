@@ -22,10 +22,12 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        if (findViewById(R.id.nav_framelayout) != null) {
+        if (findViewById(R.id.nav_framelayout) != null)
+        {
             if (savedInstanceState != null)
                 return;
-            else {
+            else
+            {
                 settingsFragment = new SettingsFragment();
                 settingsFragment.setArguments(getIntent().getExtras());
                 mapFragment = new MapFragment();
@@ -38,7 +40,7 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("GPIG Group C");
+        getSupportActionBar().setTitle("Live Map");
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -72,7 +74,7 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
         int id = item.getItemId();
         if(id == R.id.nav_map)
         {
-            getSupportActionBar().setTitle("Map");
+            getSupportActionBar().setTitle("Live Map");
             transaction.replace(R.id.nav_framelayout, mapFragment);
             transaction.commit();
         }

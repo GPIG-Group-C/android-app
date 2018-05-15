@@ -12,6 +12,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -43,11 +44,8 @@ public class MapFragment extends Fragment implements OnNotificationListener{
             public void onMapReady(GoogleMap mMap)
             {
                 googleMap = mMap;
-
-                // For dropping a marker at a point on the Map
+                // Zoom in on San Fran:
                 LatLng location = new LatLng(37.75961,-122.4269);
-
-                // For zooming automatically to the location of the marker
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(13).build();
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
@@ -58,13 +56,27 @@ public class MapFragment extends Fragment implements OnNotificationListener{
     }
 
     @Override
-    public void onAddMarker(final double lat, final double lon)
+    public void addMarker(final double lat, final double lon)
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
                 googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title("Marker Title").snippet("Marker Description"));
+            }
+        });
+    }
+
+    @Override
+    public void addCircle(final double lat, final double lon, final double radius)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                googleMap.addCircle(new CircleOptions()
+                        .center(new LatLng(lat, lon))
+                        .radius(radius));
             }
         });
     }

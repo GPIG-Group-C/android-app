@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.socket.emitter.Emitter;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import okhttp3.WebSocketListener;
 
 public final class NotificationSocketListener implements Emitter.Listener {
 
@@ -37,43 +34,34 @@ public final class NotificationSocketListener implements Emitter.Listener {
         listeners.remove(listener);
     }
 
+    // Notification from the server:
     @Override
     public void call(Object... args)
     {
         if(args.length == 0 || listeners == null)
             return;
 
-        JSONObject obj = (JSONObject)args[0];
-        Config.log("*** RECEIVING: ***");
-        Config.log(obj.toString());
-
+        JSONObject json = (JSONObject)args[0];
         try
         {
-            for (OnNotificationListener l : listeners)
-                l.onAddMarker(obj.getDouble("lat"), obj.getDouble("lng"));
+            String method = json.getString("method");
+            JSONObject params = json.getJSONObject("params");
+            switch (method)
+            {
+                case "addMarker":
+                    for (OnNotificationListener l : listeners)
+                        l.addMarker(params.getDouble("latitude"), params.getDouble("longitude"));
+                    break;
+
+                case "addCircle":
+                    for (OnNotificationListener l : listeners)
+                        l.addCircle(params.getDouble("latitude"), params.getDouble("longitude"), params.getDouble("radius"));
+                    break;
+            }
         }
         catch(JSONException e)
         {
             e.printStackTrace();
         }
-
-        /*
-            String method = message.getString("method");
-            Config.log("Method: " + method);
-            switch(method)
-            {
-                case "Player.OnPlay":
-                    for(OnNotificationListener l : listeners)
-                        l.onPlayerPlay();
-                    break;
-
-                case "Playlist.OnRemove":
-                    mClient.toast("Video removed...");
-                    break;
-
-                default:
-                    break;
-            }
-            */
     }
 }

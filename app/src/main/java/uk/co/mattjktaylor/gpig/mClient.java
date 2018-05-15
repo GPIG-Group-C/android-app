@@ -60,7 +60,7 @@ public class mClient{
                     }
 
                 });
-                webSocket.on("addNewMarker", NotificationSocketListener.getInstance());
+                webSocket.on("notification", NotificationSocketListener.getInstance());
                 webSocket.on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                     @Override
