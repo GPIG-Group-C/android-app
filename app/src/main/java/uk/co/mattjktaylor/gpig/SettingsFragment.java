@@ -46,7 +46,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
     {
         super.onDestroy();
         getPreferenceScreen().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
-        mClient.startWebSocket();
+        ServerClient.init(getActivity());
     }
 
     @Override

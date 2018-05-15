@@ -7,6 +7,9 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.Patterns;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public final class Config {
 
     private Config(){}
@@ -59,6 +62,15 @@ public final class Config {
     public static Boolean isValidIP(String url)
     {
         return Patterns.IP_ADDRESS.matcher(url).matches();
+    }
+
+    // getDate(82233213123L, "dd/MM/yyyy hh:mm:ss")
+    public static String getDate(long milliSeconds, String dateFormat)
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(milliSeconds);
+        return formatter.format(calendar.getTime());
     }
 
     public static void log(String message)

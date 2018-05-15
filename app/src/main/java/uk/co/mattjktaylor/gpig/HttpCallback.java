@@ -35,7 +35,7 @@ public abstract class HttpCallback implements Callback {
             }
 
             final String json = response.body().string();
-            Handler mainHandler = new Handler(mClient.getContext().getMainLooper());
+            Handler mainHandler = new Handler(ServerClient.getContext().getMainLooper());
             mainHandler.post(new Runnable() {
 
                 @Override

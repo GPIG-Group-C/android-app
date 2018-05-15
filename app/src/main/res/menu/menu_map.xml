@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="uk.co.mattjktaylor.gpig.MenuActivity">
+
+    <item
+        android:id="@+id/action_add"
+        android:title="Add"
+        android:icon="@drawable/ic_add_white_24dp"
+        app:showAsAction= "always">
+        <menu>
+            <item
+                android:id="@+id/action_add_marker"
+                android:title="Add marker" />
+            <item
+                android:id="@+id/action_add_circle"
+                android:title="Add circle" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/action_location"
+        android:title="My Location"
+        android:icon="@drawable/ic_my_location_white_24dp"
+        app:showAsAction= "always" />
+
+</menu>
+

@@ -50,7 +50,7 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mClient.init(this);
+        ServerClient.init(this);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
         super.onStart();
         if(!Config.isConnected(this))
         {
-            mClient.toast("No Internet Connection Detected");
+            ServerClient.toast("No Internet Connection Detected");
         }
     }
 
