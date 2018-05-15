@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base application theme. -->
+
+    <style name="MenuActionBar" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFF</item>N
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="actionMenuTextColor">#FFFFFF</item>
+    </style>
+
+    <style name="MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+    </style>
+
+</resources>
