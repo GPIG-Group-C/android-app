@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class ClientUsage {
 
-    public static void sendMarker(String ID, int type, double lat, double lon, String desc, Long dateRecorded)
+    public static void sendMarker(String ID, int type, double lat, double lon, String title, String desc, Long dateRecorded)
     {
         JSONObject json = new JSONObject();
         JSONObject params = new JSONObject();
@@ -15,6 +15,7 @@ public class ClientUsage {
             params.put("type", type);
             params.put("latitude", lat);
             params.put("longitude", lon);
+            params.put("title", title);
             params.put("desc", desc);
             params.put("dateTime", dateRecorded);
 

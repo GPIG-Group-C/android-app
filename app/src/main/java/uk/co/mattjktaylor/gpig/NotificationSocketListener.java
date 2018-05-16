@@ -50,12 +50,16 @@ public final class NotificationSocketListener implements Emitter.Listener {
             {
                 case "addMarker":
                     for (OnNotificationListener l : listeners)
-                        l.addMarker("", 1, params.getDouble("latitude"), params.getDouble("longitude"), "", null);
+                        l.addMarker(params.getString("ID"), 1, params.getDouble("latitude"),
+                                    params.getDouble("longitude"), params.getString("title"),
+                                    params.getString("desc"), params.getLong("dateTime"));
                     break;
 
                 case "addCircle":
                     for (OnNotificationListener l : listeners)
-                        l.addCircle("", params.getDouble("latitude"), params.getDouble("longitude"), params.getDouble("radius"), "", null);
+                        l.addCircle(params.getString("ID"), params.getDouble("latitude"),
+                                    params.getDouble("longitude"), params.getDouble("radius"),
+                                    params.getLong("dateTime"));
                     break;
             }
         }

@@ -41,8 +41,11 @@ dependencies {
     // Maps:
     api "com.google.android.gms:play-services-maps:15.0.1"
     api 'com.google.maps.android:android-maps-utils:0.5+'
+    // Socket.io
     api ('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    // Gson:
+    api 'com.google.code.gson:gson:2.8.4'
 }

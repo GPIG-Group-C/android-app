@@ -21,11 +21,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.Calendar;
+import java.util.UUID;
 
 public class MapFragment extends Fragment implements OnNotificationListener, GoogleMap.OnMapLongClickListener{
 
-    MapView mMapView;
-    private GoogleMap googleMap;
+    private static MapView mMapView;
+    private static GoogleMap googleMap;
+
+    //private static ArrayList<Circle>
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -75,11 +78,11 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
         switch (item.getItemId())
         {
             case R.id.action_add_circle:
-                addCircle(null,37.75961,-122.4269, 1000, null, null);
+                addCircle(UUID.randomUUID().toString(),37.75961,-122.4269, 1000,Calendar.getInstance().getTimeInMillis());
                 return true;
 
             case R.id.action_add_marker:
-                addMarker(null,1, 37.75961,-122.4269, null, null);
+                addMarker(UUID.randomUUID().toString(),1, 37.75961,-122.4269, "Title", "Desc", Calendar.getInstance().getTimeInMillis());
                 return true;
 
             case R.id.action_location:
@@ -95,8 +98,9 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
     public void onMapLongClick(LatLng latLng)
     {
         //TODO Replace with alertDialog:
-        addMarker(null,1, latLng.latitude, latLng.longitude, null, null);
-        ClientUsage.sendMarker("1",1, latLng.latitude, latLng.longitude, "Send from app", Calendar.getInstance().getTimeInMillis());
+        String ID = UUID.randomUUID().toString();
+        addMarker(ID,1, latLng.latitude, latLng.longitude, "Title", "Send from app", Calendar.getInstance().getTimeInMillis());
+        ClientUsage.sendMarker(ID, 1, latLng.latitude, latLng.longitude, "Title","Send from app", Calendar.getInstance().getTimeInMillis());
     }
 
     private void centerMap()
@@ -107,19 +111,20 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
     }
 
     @Override
-    public void addMarker(String ID, int type, final double lat, final double lon, final String desc, Long dateRecorded)
+    public void addMarker(String ID, int type, final double lat, final double lon, final String title, final String desc, Long dateRecorded)
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title("Marker Title").snippet(desc));
+                googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).title(title).snippet(desc));
+                googleMap.add
             }
         });
     }
 
     @Override
-    public void addCircle(String ID, final double lat, final double lon, final double radius, String desc, Long dateRecorded)
+    public void addCircle(String ID, final double lat, final double lon, final double radius, Long dateRecorded)
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
