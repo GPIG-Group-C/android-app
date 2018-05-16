@@ -46,4 +46,22 @@ public class MapCircle {
     {
         return circle;
     }
+
+    public String getID()
+    {
+        return ID;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof MapCircle))
+            return false;
+
+        MapCircle c = (MapCircle) o;
+        if(c.getID().equals(ID))
+            return true;
+        else
+            return false;
+    }
 }

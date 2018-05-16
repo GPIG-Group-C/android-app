@@ -3,4 +3,12 @@
     <string name="google_maps_key">AIzaSyC05wstmVCb0P9I-G_SUAjsHkLkvjBnfBQ</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string-array name="incident_types">
+        <item>Blocked Road</item>
+        <item>Medic Needed</item>
+        <item>Collapsed Building</item>
+        <item>Fire</item>
+    </string-array>
+
 </resources>

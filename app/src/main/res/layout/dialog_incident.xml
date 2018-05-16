@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="20dp">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+        <TextView
+            android:id="@+id/text_incident_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Incident type:"
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+        <Spinner
+            android:id="@+id/spinner_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/text_incident_type"/>
+    </RelativeLayout>
+
+    <Switch
+        android:id="@+id/switch_danger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="People in danger:" />
+
+    <Switch
+        android:id="@+id/switch_medic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="Medic needed:" />
+
+    <TextView
+        android:id="@+id/text_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Additional Information:"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+    <EditText
+        android:id="@+id/edit_description"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="5dp"
+        android:hint="Add any additional information here..."
+        android:inputType="textMultiLine"
+        android:minLines="4"
+        android:lines="8"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        android:gravity="top"
+        android:textSize="14sp"
+        android:textColor="@android:color/darker_gray"/>
+
+</LinearLayout>
