@@ -17,8 +17,10 @@ public class MapHeatMap {
     private int type;
     private Double latitude;
     private Double longitude;
+    private int radius;
     private Double intensity;
     private Long dateTime;
+
 
     // Do not serialise:
     private transient TileOverlay heatmap;
@@ -27,10 +29,11 @@ public class MapHeatMap {
     public MapHeatMap() {
     }
 
-    public MapHeatMap(String ID, Double lat, Double lon, Double intensity, Long dateRecorded) {
+    public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded) {
         this.ID = ID;
         this.latitude = lat;
         this.longitude = lon;
+        this.radius = radius;
         this.intensity = intensity;
         this.dateTime = dateRecorded;
     }
@@ -43,7 +46,7 @@ public class MapHeatMap {
         HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
                 .weightedData(list)
                 .build();
-        mProvider.setRadius(50);
+        mProvider.setRadius(this.radius);
 
         // Create the gradient.
         int[] colors = {

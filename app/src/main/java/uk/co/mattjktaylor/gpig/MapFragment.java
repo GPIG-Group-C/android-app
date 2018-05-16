@@ -91,8 +91,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
                 return true;
 
             case R.id.action_add_heatmap:
-                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 10.0, Calendar.getInstance().getTimeInMillis()));
-                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 10.0, Calendar.getInstance().getTimeInMillis()));
+                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
+                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 10.0, Calendar.getInstance().getTimeInMillis()));
 
             default:
                 return super.onOptionsItemSelected(item);
