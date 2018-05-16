@@ -37,7 +37,7 @@ public class ServerClient {
                     @Override
                     public void call(Object... args)
                     {
-                        Config.log("Connected");
+                        Config.log("Connected to server");
                     }
 
                 });
@@ -47,7 +47,7 @@ public class ServerClient {
                     @Override
                     public void call(Object... args)
                     {
-                        Config.log("Disconnected");
+                        Config.log("Disconnected from server");
                     }
 
                 });
