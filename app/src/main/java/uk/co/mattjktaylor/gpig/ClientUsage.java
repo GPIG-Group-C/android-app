@@ -1,32 +1,45 @@
 package uk.co.mattjktaylor.gpig;
 
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ClientUsage {
 
-    public static void sendMarker(String ID, int type, double lat, double lon, String title, String desc, Long dateRecorded)
+    private static Gson gson = new Gson();
+
+    public static void sendMarker(MapMarker m)
     {
-        JSONObject json = new JSONObject();
-        JSONObject params = new JSONObject();
         try
         {
-            params.put("ID", ID);
-            params.put("type", type);
-            params.put("latitude", lat);
-            params.put("longitude", lon);
-            params.put("title", title);
-            params.put("desc", desc);
-            params.put("dateTime", dateRecorded);
-
+            JSONObject json = new JSONObject();
+            JSONObject params = new JSONObject(gson.toJson(m));
             json.put("method", "addMarker");
             json.put("params", params);
+
+            ServerClient.broadcastData(json);
         }
         catch(JSONException e)
         {
             e.printStackTrace();
         }
+    }
 
-        ServerClient.broadcastData(json);
+    public static void sendCircle(MapCircle c)
+    {
+        try
+        {
+            JSONObject json = new JSONObject();
+            JSONObject params = new JSONObject(gson.toJson(c));
+            json.put("method", "addCircle");
+            json.put("params", params);
+
+            ServerClient.broadcastData(json);
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

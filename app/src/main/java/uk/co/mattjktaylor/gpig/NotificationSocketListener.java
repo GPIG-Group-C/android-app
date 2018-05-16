@@ -1,5 +1,7 @@
 package uk.co.mattjktaylor.gpig;
 
+import com.google.gson.Gson;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -11,7 +13,7 @@ import io.socket.emitter.Emitter;
 public final class NotificationSocketListener implements Emitter.Listener {
 
     private static List<OnNotificationListener> listeners = new ArrayList<OnNotificationListener>();
-
+    private static Gson gson = new Gson();
     private static NotificationSocketListener instance;
     private NotificationSocketListener(){}
 
@@ -49,17 +51,19 @@ public final class NotificationSocketListener implements Emitter.Listener {
             switch (method)
             {
                 case "addMarker":
+                    MapMarker m = gson.fromJson(params.toString(), MapMarker.class);
                     for (OnNotificationListener l : listeners)
-                        l.addMarker(params.getString("ID"), 1, params.getDouble("latitude"),
-                                    params.getDouble("longitude"), params.getString("title"),
-                                    params.getString("desc"), params.getLong("dateTime"));
+                    {
+                        l.addMarker(m);
+                    }
                     break;
 
                 case "addCircle":
+                    MapCircle c = gson.fromJson(params.toString(), MapCircle.class);
                     for (OnNotificationListener l : listeners)
-                        l.addCircle(params.getString("ID"), params.getDouble("latitude"),
-                                    params.getDouble("longitude"), params.getDouble("radius"),
-                                    params.getLong("dateTime"));
+                    {
+                        l.addCircle(c);
+                    }
                     break;
             }
         }

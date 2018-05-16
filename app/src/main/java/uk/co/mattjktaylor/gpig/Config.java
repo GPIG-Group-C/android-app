@@ -23,24 +23,6 @@ public final class Config {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
-    public static String getWebSocketURL(Context mContext)
-    {
-        String ipAddress = getIP(mContext);
-        if(ipAddress.isEmpty() || !isValidIP(ipAddress))
-            return "";
-
-        return String.format("ws://%s:%s/", ipAddress, getPort(mContext));
-    }
-
-    public static String getHttpURL(Context mContext)
-    {
-        String ipAddress = getIP(mContext);
-        if(ipAddress.isEmpty() || getPort(mContext).isEmpty() || !isValidIP(ipAddress))
-            return "";
-
-        return String.format("http://%s:%s", ipAddress, getPort(mContext));
-    }
-
     public static String getIpUrl(Context mContext)
     {
         SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -65,7 +47,7 @@ public final class Config {
     }
 
     // getDate(82233213123L, "dd/MM/yyyy hh:mm:ss")
-    public static String getDate(long milliSeconds, String dateFormat)
+    public static String getFormattedDate(long milliSeconds, String dateFormat)
     {
         SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
         Calendar calendar = Calendar.getInstance();
