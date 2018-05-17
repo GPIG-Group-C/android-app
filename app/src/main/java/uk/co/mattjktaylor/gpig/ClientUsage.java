@@ -42,4 +42,21 @@ public class ClientUsage {
             e.printStackTrace();
         }
     }
+
+    public static void sendHeatmap(MapHeatMap h)
+    {
+        try
+        {
+            JSONObject json = new JSONObject();
+            JSONObject params = new JSONObject(gson.toJson(h));
+            json.put("method", "addHeatmap");
+            json.put("params", params);
+
+            ServerClient.broadcastData(json);
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
+    }
 }

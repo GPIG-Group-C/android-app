@@ -1,6 +1,7 @@
 package uk.co.mattjktaylor.gpig;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +38,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     public static ArrayList<MapCircle> circles = new ArrayList<>();
     public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
 
+    public static Resources test;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment_layout, container, false);
@@ -45,6 +48,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
+
+        test = getActivity().getResources();
 
         try
         {
@@ -82,14 +87,28 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
 
         switch (item.getItemId()) {
             case R.id.action_add_circle:
-                addCircle(new MapCircle("1", 37.75961, -122.4269, 1000, Calendar.getInstance().getTimeInMillis()));
+                addCircle(new MapCircle("1", 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_add_marker:
+                addMarker(new MapMarker("0", 0, 37.71961, -122.4269,
+                        "Title 0", "Sent from app 0", Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
                         "Title 1", "Sent from app 1", Calendar.getInstance().getTimeInMillis()));
-                addMarker(new MapMarker("2", 1, 37.76961, -122.4269,
+                addMarker(new MapMarker("2", 2, 37.76961, -122.4269,
                         "Title 2", "Sent from app 2", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("3", 3, 37.77961, -122.4269,
+                        "Title 3", "Sent from app 3", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("4", 4, 37.78961, -122.4269,
+                        "Title 4", "Sent from app 4", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("5", 5, 37.79961, -122.4269,
+                        "Title 5", "Sent from app 5", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("6", 6, 37.74961, -122.4269,
+                        "Title 6", "Sent from app 6", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("7", 7, 37.73961, -122.4269,
+                        "Title 7", "Sent from app 7", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("8", 8, 37.72961, -122.4269,
+                        "Title 8", "Sent from app 8", Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_location:
@@ -128,8 +147,11 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                         EditText editDescription = (EditText) dialogView.findViewById(R.id.edit_description);
                         String desc = editDescription.getText().toString();
 
+                        Spinner typeSpinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
+                        int type = typeSpinner.getSelectedItemPosition();
+
                         // Add new marker using form data:
-                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), 1, latLng.latitude, latLng.longitude, "Incident", desc, Calendar.getInstance().getTimeInMillis());
+                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, latLng.latitude, latLng.longitude, "Incident", desc, Calendar.getInstance().getTimeInMillis());
                         // Add to map:
                         addMarker(m);
                         // Send to server:
@@ -146,7 +168,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
 
     private void centerMap() {
         LatLng location = new LatLng(37.75961, -122.4269);
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(13).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
@@ -164,13 +186,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     markers.remove(index);
                 }
 
-                m.setMarker(googleMap.addMarker(m.getMarkerOptions()));
-
-                if(m.getID().equals("3"))
-                {
-                    m.getMarker().setAlpha(0);
-                }
-
+                m.setMarker(googleMap.addMarker(m.getMarkerOptions()), getContext());
                 markers.add(m);
             }
         });

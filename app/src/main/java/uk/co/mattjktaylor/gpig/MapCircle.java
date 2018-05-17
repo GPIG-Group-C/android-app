@@ -34,7 +34,11 @@ public class MapCircle {
 
     public CircleOptions getCircleOptions()
     {
-        return new CircleOptions().center(new LatLng(latitude, longitude)).fillColor(Color.RED).radius(radius);
+        return new CircleOptions().center(new LatLng(latitude, longitude))
+                .radius(radius)
+                .strokeColor(Color.RED)
+                .fillColor(0x220000FF)
+                .strokeWidth(5);
     }
 
     public void setCircle(Circle c)

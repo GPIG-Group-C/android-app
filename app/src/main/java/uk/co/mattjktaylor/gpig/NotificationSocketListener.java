@@ -65,6 +65,14 @@ public final class NotificationSocketListener implements Emitter.Listener {
                         l.addCircle(c);
                     }
                     break;
+
+                case "addHeatmap":
+                    MapHeatMap h = gson.fromJson(params.toString(), MapHeatMap.class);
+                    for (OnNotificationListener l : listeners)
+                    {
+                        l.addHeatMap(h);
+                    }
+                    break;
             }
         }
         catch(JSONException e)

@@ -1,5 +1,8 @@
 package uk.co.mattjktaylor.gpig;
 
+import android.content.Context;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -37,13 +40,52 @@ public class MapMarker {
         return new MarkerOptions().position(new LatLng(latitude, longitude)).title(title).snippet(desc);
     }
 
-    public void setMarker(Marker m)
+    public void setMarker(Marker m, Context context)
     {
         this.marker = m;
 
-        // Heatmap marker:
-        if(type == -1)
-            m.setAlpha(0);
+        switch(type)
+        {
+            case -1:
+                m.setAlpha(0);
+                break;
+
+            case 0:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_gas_pipe)));
+                break;
+
+            case 1:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_fire)));
+                break;
+
+            case 2:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_blocked)));
+                break;
+
+            case 3:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_medic)));
+                break;
+
+            case 4:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_crack)));
+                break;
+
+            case 5:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_collapse)));
+                break;
+
+            case 6:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_fire_station)));
+                break;
+
+            case 7:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_water)));
+                break;
+
+            case 8:
+                m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, R.drawable.ic_electricity)));
+                break;
+        }
     }
 
     public String getID()

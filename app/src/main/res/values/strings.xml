@@ -5,10 +5,15 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string-array name="incident_types">
+        <item>Gas Leak</item>
+        <item>Fire</item>
         <item>Blocked Road</item>
         <item>Medic Needed</item>
+        <item>Earthquake</item>
         <item>Collapsed Building</item>
-        <item>Fire</item>
+        <item>First Responder Base</item>
+        <item>Water Leak</item>
+        <item>Electricity Fault</item>
     </string-array>
 
 </resources>
