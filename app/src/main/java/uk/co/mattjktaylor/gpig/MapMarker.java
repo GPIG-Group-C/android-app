@@ -32,9 +32,9 @@ public class MapMarker {
         this.dateTime = dateRecorded;
     }
 
-    public MarkerOptions getMarkerOptions()
+    public ClusteredMapMarker getMarkerOptions()
     {
-        return new MarkerOptions().position(new LatLng(latitude, longitude)).title(title).snippet(desc);
+        return new ClusteredMapMarker(latitude, longitude, title, desc);
     }
 
     public void setMarker(Marker m)

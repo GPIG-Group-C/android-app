@@ -94,7 +94,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         mClusterManager = new ClusterManager<ClusteredMapMarker>(getActivity().getApplicationContext(), googleMap);
         googleMap.setOnCameraIdleListener(mClusterManager);
         googleMap.setOnMarkerClickListener(mClusterManager);
-        addItems();
+//        addItems();
     }
 
     @Override
@@ -191,7 +191,9 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     markers.remove(index);
                 }
 
-                m.setMarker(googleMap.addMarker(m.getMarkerOptions()));
+//                m.setMarker(googleMap.addMarker(m.getMarkerOptions()));
+                mClusterManager.addItem(m.getMarkerOptions());
+                googleMap.on
 
                 if(m.getID().equals("3"))
                 {
