@@ -40,11 +40,20 @@ public class MapMarker {
     public void setMarker(Marker m)
     {
         this.marker = m;
+
+        // Heatmap marker:
+        if(type == -1)
+            m.setAlpha(0);
     }
 
     public String getID()
     {
         return ID;
+    }
+
+    public String getDescription()
+    {
+        return desc;
     }
 
     public Marker getMarker()

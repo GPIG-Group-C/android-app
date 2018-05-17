@@ -1,7 +1,6 @@
 package uk.co.mattjktaylor.gpig;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
@@ -29,13 +28,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
-public class MapFragment extends Fragment implements OnNotificationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
 
-    private static ArrayList<MapMarker> markers = new ArrayList<>();
-    private static ArrayList<MapCircle> circles = new ArrayList<>();
+    public static ArrayList<MapMarker> markers = new ArrayList<>();
+    public static ArrayList<MapCircle> circles = new ArrayList<>();
+    public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,24 +46,28 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
 
-        try {
+        try
+        {
             MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap mMap) {
-                googleMap = mMap;
-                googleMap.setOnMapLongClickListener(MapFragment.this);
-                googleMap.setOnMarkerClickListener(MapFragment.this);
-                centerMap();
-            }
-        });
+        mMapView.getMapAsync(this);
 
         NotificationSocketListener.addNotificationListener(this);
         return rootView;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap mMap) {
+        googleMap = mMap;
+        googleMap.setOnMapLongClickListener(this);
+        //googleMap.setOnMarkerClickListener(this);
+        googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
+        googleMap.setOnInfoWindowClickListener(this);
+        centerMap();
     }
 
     @Override
@@ -83,7 +87,9 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
 
             case R.id.action_add_marker:
                 addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
-                        "Title", "Send from app", Calendar.getInstance().getTimeInMillis()));
+                        "Title 1", "Sent from app 1", Calendar.getInstance().getTimeInMillis()));
+                addMarker(new MapMarker("2", 1, 37.76961, -122.4269,
+                        "Title 2", "Sent from app 2", Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_location:
@@ -92,7 +98,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
 
             case R.id.action_add_heatmap:
                 addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
-                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 10.0, Calendar.getInstance().getTimeInMillis()));
+                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 5.0, Calendar.getInstance().getTimeInMillis()));
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -134,10 +140,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
     }
 
     @Override
-    public boolean onMarkerClick(final Marker marker)
-    {
-        Toast.makeText(getActivity(), "Marker clicked", Toast.LENGTH_SHORT).show();
-        return true;
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getActivity(), "InfoWindow clicked", Toast.LENGTH_SHORT).show();
     }
 
     private void centerMap() {
@@ -147,8 +151,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
     }
 
     @Override
-    public void addMarker(final MapMarker m)
-    {
+    public void addMarker(final MapMarker m) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
@@ -162,6 +165,12 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
                 }
 
                 m.setMarker(googleMap.addMarker(m.getMarkerOptions()));
+
+                if(m.getID().equals("3"))
+                {
+                    m.getMarker().setAlpha(0);
+                }
+
                 markers.add(m);
             }
         });
@@ -189,9 +198,19 @@ public class MapFragment extends Fragment implements OnNotificationListener, Goo
     public void addHeatMap(final MapHeatMap h) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run() {
+            public void run()
+            {
+                int index = heatmaps.indexOf(h);
+                if(index != -1)
+                {
+                    MapHeatMap hh = heatmaps.get(index);
+                    hh.getMapMarker().getMarker().remove();
+                    hh.getHeatmap().remove();
+                }
+
                 h.setHeatmap(googleMap.addTileOverlay(h.getTileOverlayOptions()));
-//                circles.add(h);
+                addMarker(h.getMapMarker());
+                heatmaps.add(h);
             }
         });
     }

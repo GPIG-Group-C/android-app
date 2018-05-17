@@ -14,6 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Incident type:"
+            android:layout_marginEnd = "3dp"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
         <Spinner
             android:id="@+id/spinner_type"
@@ -41,6 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Additional Information:"
+        android:layout_marginBottom="10dp"
         android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
     <EditText
         android:id="@+id/edit_description"
@@ -50,8 +52,8 @@
         android:hint="Add any additional information here..."
         android:inputType="textMultiLine"
         android:minLines="4"
-        android:lines="8"
-        android:maxLines="10"
+        android:lines="10"
+        android:maxLines="20"
         android:scrollbars="vertical"
         android:gravity="top"
         android:textSize="14sp"

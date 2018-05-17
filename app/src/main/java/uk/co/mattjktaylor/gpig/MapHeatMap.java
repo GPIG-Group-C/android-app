@@ -1,6 +1,5 @@
 package uk.co.mattjktaylor.gpig;
 
-
 import android.graphics.Color;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -13,6 +12,7 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 import java.util.ArrayList;
 
 public class MapHeatMap {
+
     private String ID;
     private int type;
     private Double latitude;
@@ -21,21 +21,23 @@ public class MapHeatMap {
     private Double intensity;
     private Long dateTime;
 
-
     // Do not serialise:
     private transient TileOverlay heatmap;
+    private transient MapMarker mapMarker;
 
     // Initialised using Gson
-    public MapHeatMap() {
-    }
+    public MapHeatMap() {}
 
-    public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded) {
+    public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded)
+    {
         this.ID = ID;
         this.latitude = lat;
         this.longitude = lon;
         this.radius = radius;
         this.intensity = intensity;
         this.dateTime = dateRecorded;
+
+        mapMarker = new MapMarker(ID, -1, lat, lon, "heatmap title", "heatmap description", dateRecorded);
     }
 
     public TileOverlayOptions getTileOverlayOptions() {
@@ -65,11 +67,33 @@ public class MapHeatMap {
         return new TileOverlayOptions().tileProvider(mProvider);
     }
 
+    public String getID()
+    {
+        return ID;
+    }
+
     public void setHeatmap(TileOverlay h) {
         this.heatmap = heatmap;
     }
 
+    public MapMarker getMapMarker(){
+        return mapMarker;
+    }
+
     public TileOverlay getHeatmap() {
         return heatmap;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof MapHeatMap))
+            return false;
+
+        MapHeatMap h = (MapHeatMap) o;
+        if(h.getID().equals(ID))
+            return true;
+        else
+            return false;
     }
 }
