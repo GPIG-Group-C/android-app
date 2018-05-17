@@ -23,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.maps.android.clustering.ClusterManager;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,6 +37,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     public static ArrayList<MapMarker> markers = new ArrayList<>();
     public static ArrayList<MapCircle> circles = new ArrayList<>();
     public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
+    ClusterManager mClusterManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,10 +56,30 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             e.printStackTrace();
         }
 
+
         mMapView.getMapAsync(this);
 
+
         NotificationSocketListener.addNotificationListener(this);
+
+
         return rootView;
+    }
+
+    private void addItems() {
+
+        // Set some lat/lng coordinates to start with.
+        double lat = 51.5145160;
+        double lng = -0.1270060;
+
+        // Add ten cluster items in close proximity, for purposes of this example.
+        for (int i = 0; i < 10; i++) {
+            double offset = i / 60d;
+            lat = lat + offset;
+            lng = lng + offset;
+            ClusteredMapMarker offsetItem = new ClusteredMapMarker(lat, lng);
+            mClusterManager.addItem(offsetItem);
+        }
     }
 
     @Override
@@ -68,6 +90,11 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
         googleMap.setOnInfoWindowClickListener(this);
         centerMap();
+
+        mClusterManager = new ClusterManager<ClusteredMapMarker>(getActivity().getApplicationContext(), googleMap);
+        googleMap.setOnCameraIdleListener(mClusterManager);
+        googleMap.setOnMarkerClickListener(mClusterManager);
+        addItems();
     }
 
     @Override
