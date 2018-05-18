@@ -23,7 +23,12 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,8 +42,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     public static ArrayList<MapMarker> markers = new ArrayList<>();
     public static ArrayList<MapCircle> circles = new ArrayList<>();
     public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
-
-    public static Resources test;
+    public static ArrayList<MapPolygon> polygons = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,8 +52,6 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume(); // needed to get the map to display immediately
-
-        test = getActivity().getResources();
 
         try
         {
@@ -69,9 +71,20 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     public void onMapReady(GoogleMap mMap) {
         googleMap = mMap;
         googleMap.setOnMapLongClickListener(this);
-        //googleMap.setOnMarkerClickListener(this);
         googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
         googleMap.setOnInfoWindowClickListener(this);
+        try
+        {
+            boolean styleSuccess = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.mapstyles));
+            if(styleSuccess)
+                Config.log("Map style applied successfully");
+            else
+                Config.log("Map style failed");
+        }
+        catch (Resources.NotFoundException e)
+        {
+            e.printStackTrace();
+        }
         centerMap();
     }
 
@@ -91,24 +104,23 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 return true;
 
             case R.id.action_add_marker:
-                addMarker(new MapMarker("0", 0, 37.71961, -122.4269,
-                        "Title 0", "Sent from app 0", Calendar.getInstance().getTimeInMillis()));
+                MapDescription desc = new MapDescription(0, null, 0, null, null, null, "Test");
+                addMarker(new MapMarker("0", 0, 37.72961, -122.4269,
+                        "Title 0", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
-                        "Title 1", "Sent from app 1", Calendar.getInstance().getTimeInMillis()));
+                        "Title 1", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("2", 2, 37.76961, -122.4269,
-                        "Title 2", "Sent from app 2", Calendar.getInstance().getTimeInMillis()));
+                        "Title 2", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("3", 3, 37.77961, -122.4269,
-                        "Title 3", "Sent from app 3", Calendar.getInstance().getTimeInMillis()));
+                        "Title 3", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("4", 4, 37.78961, -122.4269,
-                        "Title 4", "Sent from app 4", Calendar.getInstance().getTimeInMillis()));
+                        "Title 4", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("5", 5, 37.79961, -122.4269,
-                        "Title 5", "Sent from app 5", Calendar.getInstance().getTimeInMillis()));
+                        "Title 5", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("6", 6, 37.74961, -122.4269,
-                        "Title 6", "Sent from app 6", Calendar.getInstance().getTimeInMillis()));
+                        "Title 6", desc, Calendar.getInstance().getTimeInMillis()));
                 addMarker(new MapMarker("7", 7, 37.73961, -122.4269,
-                        "Title 7", "Sent from app 7", Calendar.getInstance().getTimeInMillis()));
-                addMarker(new MapMarker("8", 8, 37.72961, -122.4269,
-                        "Title 8", "Sent from app 8", Calendar.getInstance().getTimeInMillis()));
+                        "Title 7", desc, Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_location:
@@ -118,6 +130,27 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             case R.id.action_add_heatmap:
                 addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
                 addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 5.0, Calendar.getInstance().getTimeInMillis()));
+                return true;
+
+            case R.id.action_add_polygon:
+                /*
+                ArrayList<LatLng> coords = new ArrayList<>();
+                coords.add( new LatLng(37.74961, -122.4169));
+                coords.add( new LatLng(37.76961, -122.4369));
+                coords.add( new LatLng(37.73961, -122.4269));
+
+                JsonArray coordJson = new JsonArray();
+                Gson gson = new Gson();
+
+                for(LatLng xy : coords)
+                {
+                    int i = gson.fromJson(xy, LatLng.class);
+                }
+                JsonElement
+                coords.add(new JsonElement().);
+                addPolygon(new MapPolygon("1", 1, 1));
+                */
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -125,7 +158,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     }
 
     @Override
-    public void onMapLongClick(final LatLng latLng) {
+    public void onMapLongClick(final LatLng latLng)
+    {
         // Get layout view for new incident:
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_incident, null);
@@ -144,14 +178,17 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        EditText editDescription = (EditText) dialogView.findViewById(R.id.edit_description);
-                        String desc = editDescription.getText().toString();
+                        EditText infoDescription = (EditText) dialogView.findViewById(R.id.edit_description);
+                        String info = infoDescription.getText().toString();
 
                         Spinner typeSpinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
                         int type = typeSpinner.getSelectedItemPosition();
 
                         // Add new marker using form data:
-                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, latLng.latitude, latLng.longitude, "Incident", desc, Calendar.getInstance().getTimeInMillis());
+                        MapDescription.Utility utility = new MapDescription.Utility();
+                        MapDescription description = new MapDescription(1, "", 1, utility, null, "First Responder", info);
+
+                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, latLng.latitude, latLng.longitude, "Incident", description, Calendar.getInstance().getTimeInMillis());
                         // Add to map:
                         addMarker(m);
                         // Send to server:
@@ -212,6 +249,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
 
     @Override
     public void addHeatMap(final MapHeatMap h) {
+        // TODO correct heatmap behaviour:
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
@@ -220,13 +258,33 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 if(index != -1)
                 {
                     MapHeatMap hh = heatmaps.get(index);
-                    hh.getMapMarker().getMarker().remove();
+                    //hh.getMapMarker().getMarker().remove();
                     hh.getHeatmap().remove();
                 }
 
                 h.setHeatmap(googleMap.addTileOverlay(h.getTileOverlayOptions()));
-                addMarker(h.getMapMarker());
+                //addMarker(h.getMapMarker());
                 heatmaps.add(h);
+            }
+        });
+    }
+
+    @Override
+    public void addPolygon(final MapPolygon p)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                int index = polygons.indexOf(p);
+                if(index != -1)
+                {
+                    MapPolygon mp = polygons.get(index);
+                    mp.getPolygon().remove();
+                }
+
+                p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
+                polygons.add(p);
             }
         });
     }

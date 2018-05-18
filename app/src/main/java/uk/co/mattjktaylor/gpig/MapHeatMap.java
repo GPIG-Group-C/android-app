@@ -37,7 +37,8 @@ public class MapHeatMap {
         this.intensity = intensity;
         this.dateTime = dateRecorded;
 
-        mapMarker = new MapMarker(ID, -1, lat, lon, "heatmap title", "heatmap description", dateRecorded);
+        // TODO sort out marker situation with heatmaps:
+        //mapMarker = new MapMarker(ID, -1, lat, lon, "heatmap title", null, dateRecorded);
     }
 
     public TileOverlayOptions getTileOverlayOptions() {

@@ -59,7 +59,7 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
         super.onStart();
         if(!Config.isConnected(this))
         {
-            ServerClient.toast("No Internet Connection Detected");
+            ServerClient.toast("No Internet Connection Detected", this);
         }
     }
 
