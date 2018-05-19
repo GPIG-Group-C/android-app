@@ -10,6 +10,8 @@ public class MapDescription {
     private String reportBy;
     private String info;
 
+    private Long dateAdded;
+
     public MapDescription() {}
 
     public MapDescription(int numPeople,
@@ -18,7 +20,8 @@ public class MapDescription {
                           Utility utilities,
                           BuildingInfo buildingInfo,
                           String reportBy,
-                          String info) {
+                          String info,
+                          Long dateAdded) {
         this.numPeople = numPeople;
         this.address = address;
         this.status = status;
@@ -26,6 +29,31 @@ public class MapDescription {
         this.buildingInfo = buildingInfo;
         this.reportBy = reportBy;
         this.info = info;
+        this.dateAdded = dateAdded;
+    }
+
+    public void setNumPeople(int numPeople) {
+        this.numPeople = numPeople;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public void setUtilities(Utility utilities) {
+        this.utilities = utilities;
+    }
+
+    public void setReportBy(String reportBy) {
+        this.reportBy = reportBy;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
+    }
+
+    public void setDateAdded(Long dateAdded) {
+        this.dateAdded = dateAdded;
     }
 
     public int getNumPeople() {
@@ -54,6 +82,10 @@ public class MapDescription {
 
     public String getInfo() {
         return info;
+    }
+
+    public Long getDateAdded() {
+        return dateAdded;
     }
 
     public static class Utility {
@@ -95,11 +127,11 @@ public class MapDescription {
     public static class BuildingInfo {
 
         private String type;
-        private String year;
+        private int year;
 
         public BuildingInfo() {}
 
-        public BuildingInfo(String type, String year) {
+        public BuildingInfo(String type, int year) {
             this.type = type;
             this.year = year;
         }
@@ -108,7 +140,7 @@ public class MapDescription {
             return type;
         }
 
-        public String getYear() {
+        public int getYear() {
             return year;
         }
     }

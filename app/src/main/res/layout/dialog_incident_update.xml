@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_severity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Severity: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+        <Spinner
+            android:id="@+id/spinner_severity"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/text_people_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Num People: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+        <EditText
+            android:id="@+id/text_people"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:layout_marginBottom="5dp"
+            tools:text="hello" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/text_additional_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Additional Information:"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+    <EditText
+        android:id="@+id/text_additional_info"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:maxLines="4"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        tools:text="Additional info..." />
+
+    <LinearLayout
+        android:id="@+id/utilities_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="5dp"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:text="Utility Status:"
+            android:textAlignment="center"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/utilties_gas_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gas: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+        <Switch
+            android:id="@+id/utilties_water_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Water: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+        <Switch
+            android:id="@+id/utilties_electricity_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Electricity: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+        <Switch
+            android:id="@+id/utilties_sewage_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sewage: "
+            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+
+    </LinearLayout>
+
+</LinearLayout>

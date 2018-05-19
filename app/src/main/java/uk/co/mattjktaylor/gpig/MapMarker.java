@@ -17,7 +17,6 @@ public class MapMarker {
     private Double longitude;
     private String title;
     private MapDescription desc;
-    private Long dateTime;
 
     // Do not serialise:
     private transient Marker marker;
@@ -40,7 +39,7 @@ public class MapMarker {
     public MapMarker() {}
 
     // Constructor for adding responder markers:
-    public MapMarker(String ID, int type, double lat, double lon, String title, MapDescription desc, Long dateRecorded)
+    public MapMarker(String ID, int type, double lat, double lon, String title, MapDescription desc)
     {
         this.ID = ID;
         this.type = type;
@@ -48,7 +47,6 @@ public class MapMarker {
         this.longitude = lon;
         this.title = title;
         this.desc = desc;
-        this.dateTime = dateRecorded;
     }
 
     public MarkerOptions getMarkerOptions()

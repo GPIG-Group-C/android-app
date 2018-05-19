@@ -43,6 +43,24 @@ public class ClientUsage {
         }
     }
 
+    public static void sendPolygon(MapPolygon p)
+    {
+        try
+        {
+            JSONObject json = new JSONObject();
+            JSONObject params = new JSONObject(gson.toJson(p));
+            json.put("method", "addPolygon");
+            json.put("params", params);
+
+            ServerClient.broadcastData(json);
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    // TODO Needs updating
     public static void sendHeatmap(MapHeatMap h)
     {
         try

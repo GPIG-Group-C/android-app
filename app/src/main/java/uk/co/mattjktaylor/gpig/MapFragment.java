@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.UUID;
 
 public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
@@ -112,23 +114,24 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 return true;
 
             case R.id.action_add_marker:
-                MapDescription desc = new MapDescription(0, null, 0, null, null, null, "Test");
+                MapDescription desc = new MapDescription(50, "N/A", 0, null, null,
+                        null, "Test", Calendar.getInstance().getTimeInMillis());
                 addMarker(new MapMarker("0", 0, 37.72961, -122.4269,
-                        "Title 0", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 0", desc));
                 addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
-                        "Title 1", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 1", desc));
                 addMarker(new MapMarker("2", 2, 37.76961, -122.4269,
-                        "Title 2", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 2", desc));
                 addMarker(new MapMarker("3", 3, 37.77961, -122.4269,
-                        "Title 3", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 3", desc));
                 addMarker(new MapMarker("4", 4, 37.78961, -122.4269,
-                        "Title 4", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 4", desc));
                 addMarker(new MapMarker("5", 5, 37.79961, -122.4269,
-                        "Title 5", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 5", desc));
                 addMarker(new MapMarker("6", 6, 37.74961, -122.4269,
-                        "Title 6", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 6", desc));
                 addMarker(new MapMarker("7", 7, 37.73961, -122.4269,
-                        "Title 7", desc, Calendar.getInstance().getTimeInMillis()));
+                        "Title 7", desc));
                 return true;
 
             case R.id.action_location:
@@ -146,22 +149,24 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 coords.add( new LatLng(37.76961, -122.4369));
                 coords.add( new LatLng(37.73961, -122.4269));
 
-                MapDescription descr = new MapDescription(1, "", 1, null, null, "","");
-                addPolygon(new MapPolygon("1", 1, 1, coords, descr, Calendar.getInstance().getTimeInMillis()));
+                MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
+                MapDescription.BuildingInfo bInfo = new MapDescription.BuildingInfo("Apartment Block", 1995);
+                MapDescription descr = new MapDescription(500, "Address", 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
+                addPolygon(new MapPolygon("1", 1, 1, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.71961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                addPolygon(new MapPolygon("2", 1, 2, coords, descr, Calendar.getInstance().getTimeInMillis()));
+                addPolygon(new MapPolygon("2", 1, 2, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
                 coords.add( new LatLng(37.77961, -122.4069));
                 coords.add( new LatLng(37.77961, -122.4369));
                 coords.add( new LatLng(37.75961, -122.4369));
-                addPolygon(new MapPolygon("3", 1, 3, coords, descr, Calendar.getInstance().getTimeInMillis()));
+                addPolygon(new MapPolygon("3", 1, 3, coords, descr));
 
                 return true;
 
@@ -199,9 +204,10 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
 
                         // Add new marker using form data:
                         MapDescription.Utility utility = new MapDescription.Utility();
-                        MapDescription description = new MapDescription(1, "", 1, utility, null, "First Responder", info);
+                        MapDescription description = new MapDescription(1, "", 1, utility, null,
+                                "First Responder", info, Calendar.getInstance().getTimeInMillis());
 
-                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, latLng.latitude, latLng.longitude, "Incident", description, Calendar.getInstance().getTimeInMillis());
+                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, latLng.latitude, latLng.longitude, "Incident", description);
                         // Add to map:
                         addMarker(m);
                         // Send to server:
@@ -212,9 +218,109 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         alertSearch.show();
     }
 
+    // TODO Needs refactoring:
     @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getActivity(), "InfoWindow clicked", Toast.LENGTH_SHORT).show();
+    public void onInfoWindowClick(Marker marker)
+    {
+        marker.hideInfoWindow();
+
+        // TODO should probably make superclass:
+        // Find marker:
+        MapMarker mapMarker = null;
+        MapPolygon mapPolygon = null;
+        MapDescription mapDescription = null;
+        for(MapMarker m : MapFragment.markers)
+        {
+            if(m.getMarker().getId().equals(marker.getId()))
+            {
+                mapMarker = m;
+                break;
+            }
+        }
+        if(mapMarker == null)
+        {
+            for(MapPolygon p : MapFragment.polygons)
+            {
+                if(p.getMarker().getId().equals(marker.getId()))
+                {
+                    mapPolygon = p;
+                    break;
+                }
+            }
+
+            if(mapPolygon == null)
+                return;
+            else
+            {
+                mapDescription = mapPolygon.getDescription();
+            }
+        }
+        else
+        {
+            mapDescription = mapMarker.getDescription();
+        }
+
+        // Get layout view for new incident:
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_incident_update, null);
+
+        // Populate using existing data:
+        final Spinner spinner_sev = (Spinner) dialogView.findViewById(R.id.spinner_severity);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, CustomInfoWindow.severities);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_sev.setAdapter(adapter);
+        spinner_sev.setSelection(mapDescription.getStatus());
+
+        final EditText people = (EditText) dialogView.findViewById(R.id.text_people);
+        people.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getNumPeople()));
+        final EditText info = (EditText) dialogView.findViewById(R.id.text_additional_info);
+        info.setText(mapDescription.getInfo());
+
+        final Switch switchGas = (Switch) dialogView.findViewById(R.id.utilties_gas_switch);
+        final Switch switchElec = (Switch) dialogView.findViewById(R.id.utilties_electricity_switch);
+        final Switch switchWater = (Switch) dialogView.findViewById(R.id.utilties_water_switch);
+        final Switch switchSewage = (Switch) dialogView.findViewById(R.id.utilties_sewage_switch);
+
+        if(mapDescription.getUtilities() != null)
+        {
+            dialogView.findViewById(R.id.utilities_container).setVisibility(View.VISIBLE);
+            switchGas.setChecked(mapDescription.getUtilities().isGas());
+            switchElec.setChecked(mapDescription.getUtilities().isElectricity());
+            switchWater.setChecked(mapDescription.getUtilities().isWater());
+            switchSewage.setChecked(mapDescription.getUtilities().isSewage());
+        }
+
+        // TODO sort out final duplication
+        final MapDescription mapDescription_ = mapDescription;
+        final MapPolygon mapPolygon_ = mapPolygon;
+        final MapMarker mapMarker_ = mapMarker;
+
+        // Show dialog using created view:
+        AlertDialog.Builder alertSearch = new AlertDialog.Builder(getActivity());
+        alertSearch.setTitle("Update Incident:");
+        alertSearch.setView(dialogView)
+                // Add action buttons
+                .setPositiveButton("Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id)
+                    {
+                        mapDescription_.setStatus(spinner_sev.getSelectedItemPosition());
+                        mapDescription_.setInfo(info.getText().toString());
+                        mapDescription_.setDateAdded(Calendar.getInstance().getTimeInMillis());
+                        mapDescription_.setNumPeople(Integer.parseInt(people.getText().toString()));
+                        mapDescription_.setReportBy("First Responder");
+
+                        if(mapDescription_.getUtilities() != null)
+                            mapDescription_.setUtilities(new MapDescription.Utility(switchGas.isChecked(), switchElec.isChecked(), switchWater.isChecked(), switchSewage.isChecked()));
+
+                        if(mapMarker_ != null)
+                            ClientUsage.sendMarker(mapMarker_);
+
+                        else if(mapPolygon_ != null)
+                            ClientUsage.sendPolygon(mapPolygon_);
+                    }
+                }).setNegativeButton("Cancel", null);
+        alertSearch.show();
     }
 
     @Override

@@ -14,20 +14,18 @@ public class MapPolygon {
     private int severity;
     private ArrayList<LatLng> coords;
     private MapDescription desc;
-    private Long timeAdded;
 
     private transient Polygon polygon;
     private transient Marker marker;
 
     public MapPolygon() {}
 
-    public MapPolygon(String ID, int type, int severity, ArrayList<LatLng> coords, MapDescription desc, Long timeAdded) {
+    public MapPolygon(String ID, int type, int severity, ArrayList<LatLng> coords, MapDescription desc) {
         this.ID = ID;
         this.type = type;
         this.severity = severity;
         this.coords = coords;
         this.desc = desc;
-        this.timeAdded = timeAdded;
     }
 
     public PolygonOptions getPolygonOptions()
@@ -111,10 +109,6 @@ public class MapPolygon {
 
     public MapDescription getDescription() {
         return desc;
-    }
-
-    public Long getTimeAdded() {
-        return timeAdded;
     }
 
     @Override
