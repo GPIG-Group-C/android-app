@@ -34,21 +34,30 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker)
     {
-        MapMarker mapMarker = null;
+        MapDescription mapDescription = null;
         for(MapMarker m : MapFragment.markers)
         {
             if(m.getMarker().getId().equals(marker.getId()))
             {
-                mapMarker = m;
+                mapDescription = m.getDescription();
                 break;
             }
         }
 
-        if(mapMarker == null)
+        for(MapPolygon p : MapFragment.polygons)
+        {
+            if(p.getMarker().getId().equals(marker.getId()))
+            {
+                mapDescription = p.getDescription();
+                break;
+            }
+        }
+
+        if(mapDescription == null)
             return null;
 
         View view = null;
-        if(mapMarker.getDescription().getUtilities() != null)
+        if(mapDescription.getUtilities() != null)
         {
             view = activity.getLayoutInflater().inflate(R.layout.map_infowindow, null);
         }
@@ -57,15 +66,15 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
             view = activity.getLayoutInflater().inflate(R.layout.map_infowindow, null);
 
             TextView sev = (TextView) view.findViewById(R.id.text_severity);
-            sev.setText(severities.get(mapMarker.getDescription().getStatus()));
+            sev.setText(severities.get(mapDescription.getStatus()));
 
-            if(mapMarker.getDescription().getBuildingInfo() != null)
+            if(mapDescription.getBuildingInfo() != null)
             {
                 TextView buildingType = (TextView) view.findViewById(R.id.text_building_type);
-                buildingType.setText(mapMarker.getDescription().getBuildingInfo().getType());
+                buildingType.setText(mapDescription.getBuildingInfo().getType());
 
                 TextView buildingYear = (TextView) view.findViewById(R.id.text_building_year);
-                buildingYear.setText(mapMarker.getDescription().getBuildingInfo().getYear());
+                buildingYear.setText(mapDescription.getBuildingInfo().getYear());
             }
         }
         return view;

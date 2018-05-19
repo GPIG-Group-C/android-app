@@ -25,16 +25,20 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
 
-public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
@@ -68,11 +72,15 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     }
 
     @Override
-    public void onMapReady(GoogleMap mMap) {
+    public void onMapReady(GoogleMap mMap)
+    {
         googleMap = mMap;
         googleMap.setOnMapLongClickListener(this);
         googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
         googleMap.setOnInfoWindowClickListener(this);
+        googleMap.setOnPolygonClickListener(this);
+
+        // Set map style:
         try
         {
             boolean styleSuccess = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.mapstyles));
@@ -133,23 +141,28 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 return true;
 
             case R.id.action_add_polygon:
-                /*
                 ArrayList<LatLng> coords = new ArrayList<>();
                 coords.add( new LatLng(37.74961, -122.4169));
                 coords.add( new LatLng(37.76961, -122.4369));
                 coords.add( new LatLng(37.73961, -122.4269));
 
-                JsonArray coordJson = new JsonArray();
-                Gson gson = new Gson();
+                MapDescription descr = new MapDescription(1, "", 1, null, null, "","");
+                addPolygon(new MapPolygon("1", 1, 1, coords, descr, Calendar.getInstance().getTimeInMillis()));
 
-                for(LatLng xy : coords)
-                {
-                    int i = gson.fromJson(xy, LatLng.class);
-                }
-                JsonElement
-                coords.add(new JsonElement().);
-                addPolygon(new MapPolygon("1", 1, 1));
-                */
+                coords.clear();
+                coords.add( new LatLng(37.71961, -122.4069));
+                coords.add( new LatLng(37.72961, -122.4069));
+                coords.add( new LatLng(37.72961, -122.4369));
+                coords.add( new LatLng(37.71961, -122.4369));
+                addPolygon(new MapPolygon("2", 1, 2, coords, descr, Calendar.getInstance().getTimeInMillis()));
+
+                coords.clear();
+                coords.add( new LatLng(37.75961, -122.4069));
+                coords.add( new LatLng(37.77961, -122.4069));
+                coords.add( new LatLng(37.77961, -122.4369));
+                coords.add( new LatLng(37.75961, -122.4369));
+                addPolygon(new MapPolygon("3", 1, 3, coords, descr, Calendar.getInstance().getTimeInMillis()));
+
                 return true;
 
             default:
@@ -193,6 +206,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                         addMarker(m);
                         // Send to server:
                         ClientUsage.sendMarker(m);
+
                     }
                 }).setNegativeButton("Cancel", null);
         alertSearch.show();
@@ -201,6 +215,26 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     @Override
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getActivity(), "InfoWindow clicked", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onPolygonClick(Polygon polygon)
+    {
+        MapPolygon mp = null;
+        for(MapPolygon p : polygons)
+        {
+            if(p.getPolygon().getId().equals(polygon.getId()))
+            {
+                mp = p;
+                break;
+            }
+        }
+
+        if(mp != null)
+        {
+            mp.getMarker().showInfoWindow();
+        }
+
     }
 
     private void centerMap() {
@@ -280,10 +314,16 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 if(index != -1)
                 {
                     MapPolygon mp = polygons.get(index);
+                    mp.getMarker().remove();
                     mp.getPolygon().remove();
                 }
 
                 p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
+
+                LatLng pos = p.getAverageCoords();
+                p.setMarker(googleMap.addMarker(new MarkerOptions().alpha(0).position(pos)
+                        .anchor((float) pos.latitude, (float) pos.longitude)
+                        .infoWindowAnchor((float) pos.latitude, (float) pos.longitude)));
                 polygons.add(p);
             }
         });
