@@ -1,54 +1,38 @@
 package uk.co.mattjktaylor.gpig;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.support.design.widget.NavigationView;
 
-public class MenuActivity extends AppCompatActivity implements  NavigationView.OnNavigationItemSelectedListener{
+import com.google.android.gms.maps.model.LatLng;
 
-    private SettingsFragment settingsFragment;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.UUID;
+
+public class MenuActivity extends AppCompatActivity {
+
     private MapFragment mapFragment;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
-        if (findViewById(R.id.nav_framelayout) != null)
+        if (mapFragment == null)
         {
-            if (savedInstanceState != null)
-                return;
-            else
-            {
-                settingsFragment = new SettingsFragment();
-                settingsFragment.setArguments(getIntent().getExtras());
-                mapFragment = new MapFragment();
-                mapFragment.setArguments(getIntent().getExtras());
-
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.add(R.id.nav_framelayout, mapFragment).commit();
-            }
+            mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Live Map");
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         ServerClient.init(this);
     }
@@ -64,42 +48,91 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item)
+    public boolean onCreateOptionsMenu(Menu menu)
     {
-        final FragmentManager manager = getSupportFragmentManager();
-        final FragmentTransaction transaction = manager.beginTransaction();
-        transaction.addToBackStack(getSupportActionBar().getTitle().toString());
-
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-        if(id == R.id.nav_map)
-        {
-            getSupportActionBar().setTitle("Live Map");
-            transaction.replace(R.id.nav_framelayout, mapFragment);
-            transaction.commit();
-        }
-        else if(id == R.id.nav_settings)
-        {
-            getSupportActionBar().setTitle("Settings");
-            transaction.replace(R.id.nav_framelayout, settingsFragment);
-            transaction.commit();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        getMenuInflater().inflate(R.menu.menu_map, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add)
+            return true;
+
+        switch (item.getItemId()) {
+            case R.id.action_add_circle:
+                mapFragment.addCircle(new MapCircle("1", 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
+                return true;
+
+            case R.id.action_add_marker:
+                MapDescription desc = new MapDescription(50, "N/A", 0, null, null,
+                        null, "Test", Calendar.getInstance().getTimeInMillis());
+                mapFragment.addMarker(new MapMarker("0", 0, 37.72961, -122.4269,
+                        "Title 0", desc));
+                mapFragment.addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
+                        "Title 1", desc));
+                mapFragment.addMarker(new MapMarker("2", 2, 37.76961, -122.4269,
+                        "Title 2", desc));
+                mapFragment.addMarker(new MapMarker("3", 3, 37.77961, -122.4269,
+                        "Title 3", desc));
+                mapFragment.addMarker(new MapMarker("4", 4, 37.78961, -122.4269,
+                        "Title 4", desc));
+                mapFragment.addMarker(new MapMarker("5", 5, 37.79961, -122.4269,
+                        "Title 5", desc));
+                mapFragment.addMarker(new MapMarker("6", 6, 37.74961, -122.4269,
+                        "Title 6", desc));
+                mapFragment.addMarker(new MapMarker("7", 7, 37.73961, -122.4269,
+                        "Title 7", desc));
+                return true;
+
+            case R.id.action_location:
+                mapFragment.centerMap();
+                return true;
+
+            case R.id.action_add_heatmap:
+                mapFragment.addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
+                mapFragment.addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 5.0, Calendar.getInstance().getTimeInMillis()));
+                return true;
+
+            case R.id.action_add_polygon:
+                ArrayList<LatLng> coords = new ArrayList<>();
+                coords.add( new LatLng(37.74961, -122.4169));
+                coords.add( new LatLng(37.76961, -122.4369));
+                coords.add( new LatLng(37.73961, -122.4269));
+
+                MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
+                MapDescription.BuildingInfo bInfo = new MapDescription.BuildingInfo("Apartment Block", 1995);
+                MapDescription descr = new MapDescription(500, "Address", 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
+                mapFragment.addPolygon(new MapPolygon("1", 1, 1, coords, descr));
+
+                coords.clear();
+                coords.add( new LatLng(37.71961, -122.4069));
+                coords.add( new LatLng(37.72961, -122.4069));
+                coords.add( new LatLng(37.72961, -122.4369));
+                coords.add( new LatLng(37.71961, -122.4369));
+                mapFragment.addPolygon(new MapPolygon("2", 1, 2, coords, descr));
+
+                coords.clear();
+                coords.add( new LatLng(37.75961, -122.4069));
+                coords.add( new LatLng(37.77961, -122.4069));
+                coords.add( new LatLng(37.77961, -122.4369));
+                coords.add( new LatLng(37.75961, -122.4369));
+                mapFragment.addPolygon(new MapPolygon("3", 1, 3, coords, descr));
+
+                return true;
+
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onBackPressed()
     {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START))
-        {
-            drawer.closeDrawer(GravityCompat.START);
-        }
-        else
-        {
             FragmentManager fm = getSupportFragmentManager();
             if (fm.getBackStackEntryCount() > 0)
             {
@@ -120,6 +153,5 @@ public class MenuActivity extends AppCompatActivity implements  NavigationView.O
                             }
                         }).create().show();
             }
-        }
     }
 }

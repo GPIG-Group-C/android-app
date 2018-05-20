@@ -30,5 +30,11 @@
         android:icon="@drawable/ic_my_location_white_24dp"
         app:showAsAction= "always" />
 
+    <item
+        android:id="@+id/action_settings"
+        android:title="Settings"
+        android:icon="@drawable/ic_settings_cog_white_24dp"
+        app:showAsAction= "never" />
+
 </menu>
 
