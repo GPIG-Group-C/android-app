@@ -29,7 +29,7 @@ public class MapHeatMap extends MapObject{
 
     public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded)
     {
-        super(ID, -1, null);
+        super(ID, 0, null);
         this.latitude = lat;
         this.longitude = lon;
         this.radius = radius;

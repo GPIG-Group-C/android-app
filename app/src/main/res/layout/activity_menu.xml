@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,31 +35,50 @@
             android:layout_height="match_parent"
             android:layout_below="@id/toolbar"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:gravity="center|top">
 
-            <TextView
-                android:id="@+id/incident_list_title"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Incident live feed:"
-                android:textSize="16sp" />
+                android:layout_margin="10dp">
+
+                <TextView
+                    android:id="@+id/incident_list_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:text="Incident List:"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/ic_unfold_more_24dp"
+                    android:tint="@color/colorPrimary" />
+
+            </RelativeLayout>
 
             <fragment
                 android:id="@+id/search_list_fragment"
                 class="uk.co.mattjktaylor.gpig.IncidentListFragment"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_margin="8dp"
-                android:layout_below="@id/incident_list_title"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:choiceMode="singleChoice"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="0dp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

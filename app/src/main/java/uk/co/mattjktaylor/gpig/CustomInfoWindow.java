@@ -37,6 +37,8 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     @Override
     public View getInfoContents(Marker marker)
     {
+        MapFragment.setCameraPosBottom(marker.getPosition());
+
         MapDescription mapDescription = null;
         for(MapObject mapObject : MapFragment.mapObjects)
         {

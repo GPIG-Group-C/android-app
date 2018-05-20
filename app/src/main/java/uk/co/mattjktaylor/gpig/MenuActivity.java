@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +19,8 @@ import java.util.UUID;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private MapFragment mapFragment;
+    private static MapFragment mapFragment;
+    public static SlidingUpPanelLayout panel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -28,6 +30,7 @@ public class MenuActivity extends AppCompatActivity {
         if (mapFragment == null)
         {
             mapFragment = (MapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+            panel = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -12,6 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
 public class IncidentListFragment extends ListFragment implements OnNotificationListener{
 
     private IncidentAdapter adapter;
@@ -34,8 +36,20 @@ public class IncidentListFragment extends ListFragment implements OnNotification
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        MenuActivity.panel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         MapObject mapObject = MapFragment.mapObjects.get(position);
-        Toast.makeText(getActivity(), "Item clicked...", Toast.LENGTH_LONG).show();
+        if(mapObject instanceof MapPolygon)
+        {
+            MapPolygon p = (MapPolygon) mapObject;
+            p.getMarker().showInfoWindow();
+        }
+        else if(mapObject instanceof MapMarker)
+        {
+            MapMarker m = (MapMarker) mapObject;
+            m.getMarker().showInfoWindow();
+        }
+        else
+            Toast.makeText(getActivity(), "Item clicked...", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -117,14 +131,15 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             ImageView icon = (ImageView) view.findViewById(R.id.incident_icon);
             icon.setImageResource(MapMarker.iconDictionary.get(mapObject.getType()));
 
-            TextView title = (TextView) view.findViewById(R.id.incident_title);
-            title.setText(mapObject.getDescription().getInfo());
-
-            TextView reportedBy = (TextView) view.findViewById(R.id.incident_reportedBy);
-            reportedBy.setText(mapObject.getDescription().getReportBy());
-
-            TextView incidentTime = (TextView) view.findViewById(R.id.incident_time);
-            incidentTime.setText(Config.getFormattedDate(mapObject.getDescription().getDateAdded(), "dd/MM/yy HH:mm:ss"));
+            if(mapObject.getDescription() != null)
+            {
+                TextView title = (TextView) view.findViewById(R.id.incident_title);
+                title.setText(mapObject.getDescription().getInfo());
+                TextView reportedBy = (TextView) view.findViewById(R.id.incident_reportedBy);
+                reportedBy.setText(mapObject.getDescription().getReportBy());
+                TextView incidentTime = (TextView) view.findViewById(R.id.incident_time);
+                incidentTime.setText(Config.getFormattedDate(mapObject.getDescription().getDateAdded(), "dd/MM/yy HH:mm:ss"));
+            }
 
             TextView incidentSeverity = (TextView) view.findViewById(R.id.incident_severity);
             incidentSeverity.setText("Severity: Type specific...");
