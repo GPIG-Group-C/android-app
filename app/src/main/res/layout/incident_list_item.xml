@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/list_selector">
+
+    <ImageView
+        android:id="@+id/incident_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="8dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Thumbnail"
+        android:maxHeight="24dp"
+        android:maxWidth="24dp"
+        app:srcCompat="@drawable/ic_fire" />
+
+    <TextView
+        android:id="@+id/incident_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/incident_icon"
+        android:layout_marginEnd="30dp"
+        android:layout_gravity="center_vertical"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        tools:text="Incident Title"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:ellipsize="end" />
+
+    <TextView
+        android:id="@+id/incident_reportedBy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/incident_title"
+        android:layout_below="@id/incident_title"
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#000000"
+        tools:text="First Responder Incident" />
+
+    <TextView
+        android:id="@+id/incident_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#000000"
+        tools:text="10/04/95 13:45:03" />
+
+    <TextView
+        android:id="@+id/incident_severity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@id/incident_title"
+        android:layout_below="@id/incident_reportedBy"
+        android:textColor="#000000"
+        tools:text="Severity: CRITICAL" />
+
+</RelativeLayout>

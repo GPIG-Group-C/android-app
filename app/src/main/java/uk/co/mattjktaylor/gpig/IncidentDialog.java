@@ -86,40 +86,33 @@ public class IncidentDialog extends AlertDialog.Builder {
     {
         marker.hideInfoWindow();
 
-        // TODO should probably make superclass:
         // Find marker:
+        // TODO could probably improve:
         MapMarker mapMarker = null;
         MapPolygon mapPolygon = null;
         MapDescription mapDescription = null;
-        for(MapMarker m : MapFragment.markers)
+        for(MapObject mapObject : MapFragment.mapObjects)
         {
-            if(m.getMarker().getId().equals(marker.getId()))
+            if(mapObject instanceof MapMarker)
             {
-                mapMarker = m;
-                break;
-            }
-        }
-        if(mapMarker == null)
-        {
-            for(MapPolygon p : MapFragment.polygons)
-            {
-                if(p.getMarker().getId().equals(marker.getId()))
+                MapMarker m = (MapMarker) mapObject;
+                if(m.getMarker().getId().equals(marker.getId()))
                 {
-                    mapPolygon = p;
+                    mapMarker = m;
+                    mapDescription = m.getDescription();
                     break;
                 }
             }
-
-            if(mapPolygon == null)
-                return;
-            else
+            else if(mapObject instanceof MapPolygon)
             {
-                mapDescription = mapPolygon.getDescription();
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getMarker().getId().equals(marker.getId()))
+                {
+                    mapPolygon = p;
+                    mapDescription = p.getDescription();
+                    break;
+                }
             }
-        }
-        else
-        {
-            mapDescription = mapMarker.getDescription();
         }
 
         // Get layout view for new incident:
@@ -152,7 +145,7 @@ public class IncidentDialog extends AlertDialog.Builder {
             switchSewage.setChecked(mapDescription.getUtilities().isSewage());
         }
 
-        // TODO sort out final duplication
+        // TODO refactor:
         final MapDescription mapDescription_ = mapDescription;
         final MapPolygon mapPolygon_ = mapPolygon;
         final MapMarker mapMarker_ = mapMarker;
@@ -176,9 +169,9 @@ public class IncidentDialog extends AlertDialog.Builder {
 
                         if(mapMarker_ != null)
                             ClientUsage.sendMarker(mapMarker_);
-
                         else if(mapPolygon_ != null)
                             ClientUsage.sendPolygon(mapPolygon_);
+
                     }
                 }).setNegativeButton("Cancel", null);
     }

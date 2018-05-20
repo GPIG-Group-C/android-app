@@ -38,24 +38,27 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     public View getInfoContents(Marker marker)
     {
         MapDescription mapDescription = null;
-        for(MapMarker m : MapFragment.markers)
+        for(MapObject mapObject : MapFragment.mapObjects)
         {
-            if(m.getMarker().getId().equals(marker.getId()))
+            if(mapObject instanceof MapPolygon)
             {
-                mapDescription = m.getDescription();
-                break;
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getMarker().getId().equals(marker.getId()))
+                {
+                    mapDescription = p.getDescription();
+                    break;
+                }
+            }
+            else if(mapObject instanceof MapMarker)
+            {
+                MapMarker m = (MapMarker) mapObject;
+                if(m.getMarker().getId().equals(marker.getId()))
+                {
+                    mapDescription = m.getDescription();
+                    break;
+                }
             }
         }
-
-        for(MapPolygon p : MapFragment.polygons)
-        {
-            if(p.getMarker().getId().equals(marker.getId()))
-            {
-                mapDescription = p.getDescription();
-                break;
-            }
-        }
-
         if(mapDescription == null)
             return null;
 

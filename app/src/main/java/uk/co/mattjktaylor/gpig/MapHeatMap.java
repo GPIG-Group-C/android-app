@@ -11,9 +11,8 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import java.util.ArrayList;
 
-public class MapHeatMap {
+public class MapHeatMap extends MapObject{
 
-    private String ID;
     private int type;
     private Double latitude;
     private Double longitude;
@@ -30,7 +29,7 @@ public class MapHeatMap {
 
     public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded)
     {
-        this.ID = ID;
+        super(ID, -1, null);
         this.latitude = lat;
         this.longitude = lon;
         this.radius = radius;
@@ -68,11 +67,6 @@ public class MapHeatMap {
         return new TileOverlayOptions().tileProvider(mProvider);
     }
 
-    public String getID()
-    {
-        return ID;
-    }
-
     public void setHeatmap(TileOverlay h) {
         this.heatmap = heatmap;
     }
@@ -85,16 +79,4 @@ public class MapHeatMap {
         return heatmap;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (!(o instanceof MapHeatMap))
-            return false;
-
-        MapHeatMap h = (MapHeatMap) o;
-        if(h.getID().equals(ID))
-            return true;
-        else
-            return false;
-    }
 }

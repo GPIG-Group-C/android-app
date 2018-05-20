@@ -7,10 +7,8 @@ import com.google.android.gms.maps.model.PolygonOptions;
 
 import java.util.ArrayList;
 
-public class MapPolygon {
+public class MapPolygon extends MapObject{
 
-    private String ID;
-    private int type;
     private int severity;
     private ArrayList<LatLng> coords;
     private MapDescription desc;
@@ -20,9 +18,9 @@ public class MapPolygon {
 
     public MapPolygon() {}
 
-    public MapPolygon(String ID, int type, int severity, ArrayList<LatLng> coords, MapDescription desc) {
-        this.ID = ID;
-        this.type = type;
+    public MapPolygon(String ID, int type, int severity, ArrayList<LatLng> coords, MapDescription desc)
+    {
+        super(ID, type, desc);
         this.severity = severity;
         this.coords = coords;
         this.desc = desc;
@@ -37,17 +35,17 @@ public class MapPolygon {
         // 40% transparency = 0x64
         switch (severity)
         {
-            case 1:
+            case 0:
                 // Yellow
                 polyColour = 0x64FFFF00;
                 break;
 
-            case 2:
+            case 1:
                 // Orange
                 polyColour = 0x64FF9900;
                 break;
 
-            case 3:
+            case 2:
                 // Red
                 polyColour = 0x64FF0000;
                 break;
@@ -68,6 +66,10 @@ public class MapPolygon {
     public void setMarker(Marker m)
     {
         marker = m;
+    }
+
+    public int getSeverity(){
+        return severity;
     }
 
     public Marker getMarker()
@@ -93,34 +95,5 @@ public class MapPolygon {
     public Polygon getPolygon()
     {
         return polygon;
-    }
-
-    public String getID() {
-        return ID;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public int getSeverity() {
-        return severity;
-    }
-
-    public MapDescription getDescription() {
-        return desc;
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (!(o instanceof MapPolygon))
-            return false;
-
-        MapPolygon p = (MapPolygon) o;
-        if(p.getID().equals(ID))
-            return true;
-        else
-            return false;
     }
 }

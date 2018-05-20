@@ -32,7 +32,7 @@ public class MenuActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Live Map");
+        getSupportActionBar().setTitle("GPIG Group C");
 
         ServerClient.init(this);
     }
@@ -61,27 +61,27 @@ public class MenuActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_add_circle:
-                mapFragment.addCircle(new MapCircle("1", 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
+                mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),1, 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_add_marker:
                 MapDescription desc = new MapDescription(50, "N/A", 0, null, null,
                         null, "Test", Calendar.getInstance().getTimeInMillis());
-                mapFragment.addMarker(new MapMarker("0", 0, 37.72961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 0, 37.72961, -122.4269,
                         "Title 0", desc));
-                mapFragment.addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 1, 37.75961, -122.4269,
                         "Title 1", desc));
-                mapFragment.addMarker(new MapMarker("2", 2, 37.76961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 2, 37.76961, -122.4269,
                         "Title 2", desc));
-                mapFragment.addMarker(new MapMarker("3", 3, 37.77961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 3, 37.77961, -122.4269,
                         "Title 3", desc));
-                mapFragment.addMarker(new MapMarker("4", 4, 37.78961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 4, 37.78961, -122.4269,
                         "Title 4", desc));
-                mapFragment.addMarker(new MapMarker("5", 5, 37.79961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 5, 37.79961, -122.4269,
                         "Title 5", desc));
-                mapFragment.addMarker(new MapMarker("6", 6, 37.74961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 6, 37.74961, -122.4269,
                         "Title 6", desc));
-                mapFragment.addMarker(new MapMarker("7", 7, 37.73961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 7, 37.73961, -122.4269,
                         "Title 7", desc));
                 return true;
 
@@ -103,21 +103,21 @@ public class MenuActivity extends AppCompatActivity {
                 MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
                 MapDescription.BuildingInfo bInfo = new MapDescription.BuildingInfo("Apartment Block", 1995);
                 MapDescription descr = new MapDescription(500, "Address", 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
-                mapFragment.addPolygon(new MapPolygon("1", 1, 1, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 1, 0, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.71961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon("2", 1, 2, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 2, 1, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
                 coords.add( new LatLng(37.77961, -122.4069));
                 coords.add( new LatLng(37.77961, -122.4369));
                 coords.add( new LatLng(37.75961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon("3", 1, 3, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 3, 2,coords, descr));
 
                 return true;
 
@@ -133,25 +133,24 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
-            FragmentManager fm = getSupportFragmentManager();
-            if (fm.getBackStackEntryCount() > 0)
-            {
-                String title = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
-                getSupportActionBar().setTitle(title);
-                fm.popBackStack();
-            }
-            else
-            {
-                new AlertDialog.Builder(this)
-                        .setTitle("Exit application")
-                        .setMessage("Are you sure you want to exit?")
-                        .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                MenuActivity.super.onBackPressed();
-                            }
-                        }).create().show();
-            }
+        FragmentManager fm = getSupportFragmentManager();
+        if (fm.getBackStackEntryCount() > 0)
+        {
+            String title = fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
+            getSupportActionBar().setTitle(title);
+            fm.popBackStack();
+        }
+        else
+        {
+            new AlertDialog.Builder(this)
+                    .setTitle("Exit application")
+                    .setMessage("Are you sure you want to exit?")
+                    .setNegativeButton(android.R.string.no, null)
+                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface arg0, int arg1) {
+                            MenuActivity.super.onBackPressed();
+                        }
+                    }).create().show();
+        }
     }
 }

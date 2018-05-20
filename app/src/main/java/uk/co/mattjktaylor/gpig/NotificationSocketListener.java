@@ -36,6 +36,14 @@ public final class NotificationSocketListener implements Emitter.Listener {
         listeners.remove(listener);
     }
 
+    public static void notifyListUpdate()
+    {
+        for (OnNotificationListener l : listeners)
+        {
+            l.onListUpdated();
+        }
+    }
+
     // Notification from the server:
     @Override
     public void call(Object... args)
@@ -71,6 +79,14 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     for (OnNotificationListener l : listeners)
                     {
                         l.addHeatMap(h);
+                    }
+                    break;
+
+                case "addPolygon":
+                    MapPolygon p = gson.fromJson(params.toString(), MapPolygon.class);
+                    for (OnNotificationListener l : listeners)
+                    {
+                        l.addPolygon(p);
                     }
                     break;
             }

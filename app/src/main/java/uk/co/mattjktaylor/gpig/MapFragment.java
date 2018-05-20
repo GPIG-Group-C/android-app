@@ -4,9 +4,6 @@ import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,18 +20,13 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
 
 public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
 
-    public static ArrayList<MapMarker> markers = new ArrayList<>();
-    public static ArrayList<MapCircle> circles = new ArrayList<>();
-    public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
-    public static ArrayList<MapPolygon> polygons = new ArrayList<>();
+    public static ArrayList<MapObject> mapObjects = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -101,12 +93,16 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     public void onPolygonClick(Polygon polygon)
     {
         MapPolygon mp = null;
-        for(MapPolygon p : polygons)
+        for(MapObject mapObject : mapObjects)
         {
-            if(p.getPolygon().getId().equals(polygon.getId()))
+            if(mapObject instanceof MapPolygon)
             {
-                mp = p;
-                break;
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getPolygon().getId().equals(polygon.getId()))
+                {
+                    mp = p;
+                    break;
+                }
             }
         }
         if(mp != null)
@@ -127,16 +123,18 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             @Override
             public void run()
             {
-                int index = markers.indexOf(m);
+                int index = mapObjects.indexOf(m);
                 if(index != -1)
                 {
-                    MapMarker mm = markers.get(index);
+                    MapMarker mm = (MapMarker) mapObjects.get(index);
                     mm.getMarker().remove();
-                    markers.remove(index);
+                    mapObjects.remove(index);
+                    Config.log("Success...");
                 }
 
                 m.setMarker(googleMap.addMarker(m.getMarkerOptions()), getContext());
-                markers.add(m);
+                mapObjects.add(m);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
@@ -146,15 +144,16 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int index = circles.indexOf(c);
+                int index = mapObjects.indexOf(c);
                 if(index != -1)
                 {
-                    MapCircle cc = circles.get(index);
+                    MapCircle cc = (MapCircle) mapObjects.get(index);
                     cc.getCircle().remove();
-                    circles.remove(index);
+                    mapObjects.remove(index);
                 }
                 c.setCircle(googleMap.addCircle(c.getCircleOptions()));
-                circles.add(c);
+                mapObjects.add(c);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
@@ -166,17 +165,18 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             @Override
             public void run()
             {
-                int index = heatmaps.indexOf(h);
+                int index = mapObjects.indexOf(h);
                 if(index != -1)
                 {
-                    MapHeatMap hh = heatmaps.get(index);
+                    MapHeatMap hh = (MapHeatMap) mapObjects.get(index);
                     //hh.getMapMarker().getMarker().remove();
                     hh.getHeatmap().remove();
                 }
 
                 h.setHeatmap(googleMap.addTileOverlay(h.getTileOverlayOptions()));
                 //addMarker(h.getMapMarker());
-                heatmaps.add(h);
+                mapObjects.add(h);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
@@ -188,10 +188,10 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             @Override
             public void run()
             {
-                int index = polygons.indexOf(p);
+                int index = mapObjects.indexOf(p);
                 if(index != -1)
                 {
-                    MapPolygon mp = polygons.get(index);
+                    MapPolygon mp = (MapPolygon) mapObjects.get(index);
                     mp.getMarker().remove();
                     mp.getPolygon().remove();
                 }
@@ -202,11 +202,16 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 p.setMarker(googleMap.addMarker(new MarkerOptions().alpha(0).position(pos)
                         .anchor((float) pos.latitude, (float) pos.longitude)
                         .infoWindowAnchor((float) pos.latitude, (float) pos.longitude)));
-                polygons.add(p);
+                mapObjects.add(p);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
 
+    @Override
+    public void onListUpdated() {
+        Config.log("Map updated...");
+    }
 
     @Override
     public void onResume() {

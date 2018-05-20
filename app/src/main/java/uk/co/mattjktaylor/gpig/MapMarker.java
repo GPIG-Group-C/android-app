@@ -9,19 +9,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class MapMarker {
+public class MapMarker extends MapObject{
 
-    private String ID;
-    private int type;
     private Double latitude;
     private Double longitude;
     private String title;
-    private MapDescription desc;
 
     // Do not serialise:
     private transient Marker marker;
 
-    private static transient ArrayList<Integer> iconDictionary;
+    public static transient ArrayList<Integer> iconDictionary;
     static
     {
         iconDictionary = new ArrayList<Integer>();
@@ -41,45 +38,28 @@ public class MapMarker {
     // Constructor for adding responder markers:
     public MapMarker(String ID, int type, double lat, double lon, String title, MapDescription desc)
     {
-        this.ID = ID;
-        this.type = type;
+        super(ID, type, desc);
         this.latitude = lat;
         this.longitude = lon;
         this.title = title;
-        this.desc = desc;
     }
 
     public MarkerOptions getMarkerOptions()
     {
-        return new MarkerOptions().position(new LatLng(latitude, longitude)).title(title).snippet(desc.getInfo());
+        return new MarkerOptions().position(new LatLng(latitude, longitude)).title(title).snippet(getDescription().getInfo());
     }
 
     public void setMarker(Marker m, Context context)
     {
         this.marker = m;
-        if(type == -1)
+        if(getType() == -1)
             m.setAlpha(0);
         else
         {
-            int resourceID = iconDictionary.get(type);
+            int resourceID = iconDictionary.get(getType());
             if(resourceID != -1)
                 m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, resourceID)));
         }
-    }
-
-    public String getID()
-    {
-        return ID;
-    }
-
-    public int getType()
-    {
-        return type;
-    }
-
-    public MapDescription getDescription()
-    {
-        return desc;
     }
 
     public Marker getMarker()
@@ -87,16 +67,4 @@ public class MapMarker {
         return marker;
     }
 
-    @Override
-    public boolean equals(Object o)
-    {
-        if (!(o instanceof MapMarker))
-            return false;
-
-        MapMarker m = (MapMarker) o;
-        if(m.getID().equals(ID))
-            return true;
-        else
-            return false;
-    }
 }
