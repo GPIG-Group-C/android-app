@@ -1,14 +1,4 @@
 <resources>
     <string name="app_name">GPIG</string>
     <string name="google_maps_key">AIzaSyC05wstmVCb0P9I-G_SUAjsHkLkvjBnfBQ</string>
-
-    <string-array name="incident_types">
-        <item>Gas Leak</item>
-        <item>Fire</item>
-        <item>Blocked Road</item>
-        <item>Collapsed Building</item>
-        <item>Water Leak</item>
-        <item>Electricity Fault</item>
-    </string-array>
-
 </resources>

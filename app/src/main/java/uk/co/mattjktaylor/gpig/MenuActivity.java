@@ -65,28 +65,14 @@ public class MenuActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_add_circle:
-                mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),1, 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
+                mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),"fire", 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_add_marker:
                 MapDescription desc = new MapDescription(50, 0, null, null,
                         null, "Test", Calendar.getInstance().getTimeInMillis());
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 0, 37.72961, -122.4269,
+                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), "gas", 37.72961, -122.4269,
                         "Title 0", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 1, 37.75961, -122.4269,
-                        "Title 1", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 2, 37.76961, -122.4269,
-                        "Title 2", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 3, 37.77961, -122.4269,
-                        "Title 3", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 4, 37.78961, -122.4269,
-                        "Title 4", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 5, 37.79961, -122.4269,
-                        "Title 5", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 6, 37.74961, -122.4269,
-                        "Title 6", desc));
-                mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 7, 37.73961, -122.4269,
-                        "Title 7", desc));
                 return true;
 
             case R.id.action_location:
@@ -110,14 +96,14 @@ public class MenuActivity extends AppCompatActivity {
                 MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
                 MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo("Address", "Apartment Block", 1995);
                 MapDescription descr = new MapDescription(500, 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 1, 0, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), "fire", 0, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.71961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 2, 1, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), "fire", 1, coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
@@ -125,7 +111,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.77961, -122.4369));
                 coords.add( new LatLng(37.75961, -122.4369));
 
-                MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), 3, 2,coords, descr);
+                MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), "fire", 2,coords, descr);
                 mapFragment.addPolygon(p);
                 ClientUsage.sendPolygon(p);
                 return true;

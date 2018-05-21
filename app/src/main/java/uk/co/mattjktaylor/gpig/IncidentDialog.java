@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -23,6 +24,18 @@ public class IncidentDialog extends AlertDialog.Builder {
     private LatLng coords;
     private MapFragment map;
     private Marker marker;
+
+    public static transient HashMap<String, String> dropdown;
+    static
+    {
+        dropdown = new HashMap<String, String>();
+        dropdown.put("Gas Leak", "gas");
+        dropdown.put("Fire", "fire");
+        dropdown.put("Blocked Road", "blocked");
+        dropdown.put("Collapsed Building", "collapse");
+        dropdown.put("Water Leak", "water");
+        dropdown.put("Electricity Fault", "electricity");
+    }
 
     public IncidentDialog(Activity activity, MapFragment map, LatLng coords)
     {
@@ -47,8 +60,7 @@ public class IncidentDialog extends AlertDialog.Builder {
         final View dialogView = inflater.inflate(R.layout.dialog_incident, null);
         // Setup spinner for incident types:
         Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
-                R.array.incident_types, R.layout.spinner_item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, dropdown.keySet().toArray(new String[dropdown.size()]));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
@@ -64,7 +76,7 @@ public class IncidentDialog extends AlertDialog.Builder {
                         String info = infoDescription.getText().toString();
 
                         Spinner typeSpinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-                        int type = typeSpinner.getSelectedItemPosition();
+                        String type = dropdown.get(typeSpinner.getSelectedItem().toString());
 
                         // Add new marker using form data:
                         MapDescription.Utility utility = new MapDescription.Utility();

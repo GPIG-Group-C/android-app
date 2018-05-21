@@ -18,7 +18,7 @@ public class MapPolygon extends MapObject{
 
     public MapPolygon() {}
 
-    public MapPolygon(String ID, int type, int severity, ArrayList<LatLng> coords, MapDescription desc)
+    public MapPolygon(String ID, String type, int severity, ArrayList<LatLng> coords, MapDescription desc)
     {
         super(ID, type, desc);
         this.severity = severity;

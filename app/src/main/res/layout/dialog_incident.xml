@@ -5,23 +5,18 @@
     android:layout_height="fill_parent"
     android:padding="20dp">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp">
         <TextView
             android:id="@+id/text_incident_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Incident type:"
-            android:layout_marginEnd = "3dp"
+            android:layout_marginBottom="2dp"
             android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
         <Spinner
             android:id="@+id/spinner_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/text_incident_type"/>
-    </RelativeLayout>
+            android:layout_marginBottom="10dp"/>
 
     <Switch
         android:id="@+id/switch_danger"

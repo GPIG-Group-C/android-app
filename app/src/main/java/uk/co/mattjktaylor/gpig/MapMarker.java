@@ -7,7 +7,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapMarker extends MapObject{
 
@@ -18,25 +18,25 @@ public class MapMarker extends MapObject{
     // Do not serialise:
     private transient Marker marker;
 
-    public static transient ArrayList<Integer> iconDictionary;
+    public static transient HashMap<String, Integer> iconDictionary;
     static
     {
-        iconDictionary = new ArrayList<Integer>();
-        iconDictionary.add(R.drawable.ic_gas_pipe);
-        iconDictionary.add(R.drawable.ic_fire);
-        iconDictionary.add(R.drawable.ic_blocked);
-        iconDictionary.add(R.drawable.ic_medic);
-        iconDictionary.add(R.drawable.ic_earthquake);
-        iconDictionary.add(R.drawable.ic_collapse);
-        iconDictionary.add(R.drawable.ic_water);
-        iconDictionary.add(R.drawable.ic_electricity);
+        iconDictionary = new HashMap<String, Integer>();
+        iconDictionary.put("gas", R.drawable.ic_gas_pipe);
+        iconDictionary.put("fire", R.drawable.ic_fire);
+        iconDictionary.put("blocked", R.drawable.ic_blocked);
+        iconDictionary.put("medic", R.drawable.ic_medic);
+        iconDictionary.put("earthquake", R.drawable.ic_earthquake);
+        iconDictionary.put("collapse", R.drawable.ic_collapse);
+        iconDictionary.put("water", R.drawable.ic_water);
+        iconDictionary.put("electricity", R.drawable.ic_electricity);
     }
 
     // Initialised using Gson
     public MapMarker() {}
 
     // Constructor for adding responder markers:
-    public MapMarker(String ID, int type, double lat, double lon, String title, MapDescription desc)
+    public MapMarker(String ID, String type, double lat, double lon, String title, MapDescription desc)
     {
         super(ID, type, desc);
         this.lat = lat;
@@ -56,7 +56,7 @@ public class MapMarker extends MapObject{
     public void setMarker(Marker m, Context context)
     {
         this.marker = m;
-        if(getType() == -1)
+        if(getType() == null)
             m.setAlpha(0);
         else
         {

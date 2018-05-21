@@ -3,12 +3,12 @@ package uk.co.mattjktaylor.gpig;
 public class MapObject {
 
     private String ID;
-    private int type;
+    private String type;
     private MapDescription description;
 
     public MapObject(){}
 
-    public MapObject(String ID, int type, MapDescription description)
+    public MapObject(String ID, String type, MapDescription description)
     {
         this.ID = ID;
         this.type = type;
@@ -19,7 +19,7 @@ public class MapObject {
         return ID;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 

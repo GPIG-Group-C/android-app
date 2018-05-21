@@ -20,7 +20,7 @@ public class MapCircle extends MapObject{
     public MapCircle() {}
 
     // Constructor for adding responder markers:
-    public MapCircle(String ID, int type, double lat, double lon, double radius, Long dateRecorded)
+    public MapCircle(String ID, String type, double lat, double lon, double radius, Long dateRecorded)
     {
         super(ID, type, null);
         this.lat = lat;

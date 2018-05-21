@@ -13,7 +13,6 @@ import java.util.ArrayList;
 
 public class MapHeatMap extends MapObject{
 
-    private int type;
     private Double latitude;
     private Double longitude;
     private int radius;
@@ -29,7 +28,7 @@ public class MapHeatMap extends MapObject{
 
     public MapHeatMap(String ID, Double lat, Double lon, int radius, Double intensity, Long dateRecorded)
     {
-        super(ID, 0, null);
+        super(ID, null, null);
         this.latitude = lat;
         this.longitude = lon;
         this.radius = radius;
