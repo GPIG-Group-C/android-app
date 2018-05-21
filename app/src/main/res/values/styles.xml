@@ -10,6 +10,7 @@
 
     <style name="MyTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
 
 </resources>

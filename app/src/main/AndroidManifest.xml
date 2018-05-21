@@ -27,5 +27,16 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="uk.co.mattjktaylor.gpig.SettingsActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize">
+            <intent-filter>
+                <category android:name="android.intent.category.PREFERENCE"/>
+            </intent-filter>
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MenuActivity"/>
+        </activity>
+
     </application>
 </manifest>

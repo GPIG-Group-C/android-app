@@ -1,48 +1,40 @@
 package uk.co.mattjktaylor.gpig;
 
-import android.content.DialogInterface;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.maps.android.clustering.ClusterManager;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.UUID;
 
-public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
 
-    public static ArrayList<MapMarker> markers = new ArrayList<>();
-    public static ArrayList<MapCircle> circles = new ArrayList<>();
-    public static ArrayList<MapHeatMap> heatmaps = new ArrayList<>();
+    public static ArrayList<MapObject> mapObjects = new ArrayList<>();
     ClusterManager mClusterManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.map_fragment_layout, container, false);
-        setHasOptionsMenu(true);
 
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -83,12 +75,27 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     }
 
     @Override
-    public void onMapReady(GoogleMap mMap) {
+    public void onMapReady(GoogleMap mMap)
+    {
         googleMap = mMap;
         googleMap.setOnMapLongClickListener(this);
-        //googleMap.setOnMarkerClickListener(this);
         googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
         googleMap.setOnInfoWindowClickListener(this);
+        googleMap.setOnPolygonClickListener(this);
+
+        // Set map style:
+        try
+        {
+            boolean styleSuccess = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.mapstyles));
+            if(styleSuccess)
+                Config.log("Map style applied successfully");
+            else
+                Config.log("Map style failed");
+        }
+        catch (Resources.NotFoundException e)
+        {
+            e.printStackTrace();
+        }
         centerMap();
 
         mClusterManager = new ClusterManager<ClusteredMapMarker>(getActivity().getApplicationContext(), googleMap);
@@ -98,83 +105,52 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_map, menu);
+    public void onMapLongClick(final LatLng latLng)
+    {
+        IncidentDialog dialog = new IncidentDialog(getActivity(), this, latLng);
+        dialog.show();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_add)
-            return true;
+    public void onInfoWindowClick(Marker marker)
+    {
+        IncidentDialog dialog = new IncidentDialog(getActivity(), marker);
+        dialog.show();
+    }
 
-        switch (item.getItemId()) {
-            case R.id.action_add_circle:
-                addCircle(new MapCircle("1", 37.75961, -122.4269, 1000, Calendar.getInstance().getTimeInMillis()));
-                return true;
-
-            case R.id.action_add_marker:
-                addMarker(new MapMarker("1", 1, 37.75961, -122.4269,
-                        "Title 1", "Sent from app 1", Calendar.getInstance().getTimeInMillis()));
-                addMarker(new MapMarker("2", 1, 37.76961, -122.4269,
-                        "Title 2", "Sent from app 2", Calendar.getInstance().getTimeInMillis()));
-                return true;
-
-            case R.id.action_location:
-                centerMap();
-                return true;
-
-            case R.id.action_add_heatmap:
-                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
-                addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 5.0, Calendar.getInstance().getTimeInMillis()));
-
-            default:
-                return super.onOptionsItemSelected(item);
+    @Override
+    public void onPolygonClick(Polygon polygon)
+    {
+        MapPolygon mp = null;
+        for(MapObject mapObject : mapObjects)
+        {
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getPolygon().getId().equals(polygon.getId()))
+                {
+                    mp = p;
+                    break;
+                }
+            }
+        }
+        if(mp != null)
+        {
+            mp.getMarker().showInfoWindow();
         }
     }
 
-    @Override
-    public void onMapLongClick(final LatLng latLng) {
-        // Get layout view for new incident:
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_incident, null);
-        // Setup spinner for incident types:
-        Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.incident_types, R.layout.spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        // Show dialog using created view:
-        AlertDialog.Builder alertSearch = new AlertDialog.Builder(getActivity());
-        alertSearch.setTitle("Add Incident At Location");
-        alertSearch.setView(dialogView)
-                // Add action buttons
-                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        EditText editDescription = (EditText) dialogView.findViewById(R.id.edit_description);
-                        String desc = editDescription.getText().toString();
-
-                        // Add new marker using form data:
-                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), 1, latLng.latitude, latLng.longitude, "Incident", desc, Calendar.getInstance().getTimeInMillis());
-                        // Add to map:
-                        addMarker(m);
-                        // Send to server:
-                        ClientUsage.sendMarker(m);
-                    }
-                }).setNegativeButton("Cancel", null);
-        alertSearch.show();
-    }
-
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getActivity(), "InfoWindow clicked", Toast.LENGTH_SHORT).show();
-    }
-
-    private void centerMap() {
+    public void centerMap() {
         LatLng location = new LatLng(37.75961, -122.4269);
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(13).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(12).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    public static void setCameraPosBottom(LatLng pos) {
+        Projection proj = googleMap.getProjection();
+        Point markerPoint = proj.toScreenLocation(pos);
+        Point targetPoint = new Point(markerPoint.x, markerPoint.y - mMapView.getHeight() / 2);
+        googleMap.animateCamera(CameraUpdateFactory.newLatLng(proj.fromScreenLocation(targetPoint)));
     }
 
     @Override
@@ -183,24 +159,26 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             @Override
             public void run()
             {
-                int index = markers.indexOf(m);
+                int index = mapObjects.indexOf(m);
                 if(index != -1)
                 {
-                    MapMarker mm = markers.get(index);
+                    MapMarker mm = (MapMarker) mapObjects.get(index);
                     mm.getMarker().remove();
-                    markers.remove(index);
+                    mapObjects.remove(index);
+                    Config.log("Success...");
                 }
 
 //                m.setMarker(googleMap.addMarker(m.getMarkerOptions()));
                 mClusterManager.addItem(m.getMarkerOptions());
-                googleMap.on
+//                googleMap.on
 
                 if(m.getID().equals("3"))
                 {
                     m.getMarker().setAlpha(0);
                 }
 
-                markers.add(m);
+                mapObjects.add(m);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
@@ -210,40 +188,74 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                int index = circles.indexOf(c);
+                int index = mapObjects.indexOf(c);
                 if(index != -1)
                 {
-                    MapCircle cc = circles.get(index);
+                    MapCircle cc = (MapCircle) mapObjects.get(index);
                     cc.getCircle().remove();
-                    circles.remove(index);
+                    mapObjects.remove(index);
                 }
                 c.setCircle(googleMap.addCircle(c.getCircleOptions()));
-                circles.add(c);
+                mapObjects.add(c);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
 
     @Override
     public void addHeatMap(final MapHeatMap h) {
+        // TODO correct heatmap behaviour:
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run()
             {
-                int index = heatmaps.indexOf(h);
+                int index = mapObjects.indexOf(h);
                 if(index != -1)
                 {
-                    MapHeatMap hh = heatmaps.get(index);
-                    hh.getMapMarker().getMarker().remove();
+                    MapHeatMap hh = (MapHeatMap) mapObjects.get(index);
+                    //hh.getMapMarker().getMarker().remove();
                     hh.getHeatmap().remove();
                 }
 
                 h.setHeatmap(googleMap.addTileOverlay(h.getTileOverlayOptions()));
-                addMarker(h.getMapMarker());
-                heatmaps.add(h);
+                //addMarker(h.getMapMarker());
+                mapObjects.add(h);
+                NotificationSocketListener.notifyListUpdate();
             }
         });
     }
 
+    @Override
+    public void addPolygon(final MapPolygon p)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                int index = mapObjects.indexOf(p);
+                if(index != -1)
+                {
+                    MapPolygon mp = (MapPolygon) mapObjects.get(index);
+                    mp.getMarker().remove();
+                    mp.getPolygon().remove();
+                }
+
+                p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
+
+                LatLng pos = p.getAverageCoords();
+                p.setMarker(googleMap.addMarker(new MarkerOptions().alpha(0).position(pos)
+                        .anchor((float) pos.latitude, (float) pos.longitude)
+                        .infoWindowAnchor((float) pos.latitude, (float) pos.longitude)));
+                mapObjects.add(p);
+                NotificationSocketListener.notifyListUpdate();
+            }
+        });
+    }
+
+    @Override
+    public void onListUpdated() {
+        Config.log("Map updated...");
+    }
 
     @Override
     public void onResume() {

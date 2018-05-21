@@ -3,6 +3,8 @@ package uk.co.mattjktaylor.gpig;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -13,25 +15,23 @@ import io.socket.emitter.Emitter;
 
 public class ServerClient {
 
-    private static Context context;
     private static Socket webSocket;
 
-    public static void init(final Context mContext)
+    public static void init(final Context context)
     {
-        context = mContext;
-        if(!Config.getIP(context).isEmpty())
+        if(webSocket != null)
         {
-            if(webSocket != null)
-            {
-                webSocket.disconnect();
-                webSocket.close();
-            }
+            webSocket.disconnect();
+            webSocket.close();
+        }
 
+        if(!Config.getIP(context).isEmpty() && !Config.getIP(context).isEmpty())
+        {
             try
             {
                 IO.Options op = new IO.Options();
-                op.port = Integer.parseInt(Config.getPort(getContext()));
-                webSocket = IO.socket(Config.getIpUrl(getContext()), op);
+                op.port = Integer.parseInt(Config.getPort(context));
+                webSocket = IO.socket(Config.getIpUrl(context), op);
                 webSocket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
                     @Override
@@ -60,18 +60,15 @@ public class ServerClient {
         }
     }
 
-    public static Context getContext()
-    {
-        return context;
-    }
-
-    public static void toast(String message)
+    public static void toast(String message, Context context)
     {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
     public static void broadcastData(JSONObject json)
     {
-        webSocket.emit("broadcastData", json);
+        Config.log("Broadcasting: " + json.toString());
+        if(webSocket != null)
+            webSocket.emit("broadcastData", json);
     }
 }
