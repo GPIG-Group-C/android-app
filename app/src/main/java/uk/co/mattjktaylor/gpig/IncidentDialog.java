@@ -68,7 +68,7 @@ public class IncidentDialog extends AlertDialog.Builder {
 
                         // Add new marker using form data:
                         MapDescription.Utility utility = new MapDescription.Utility();
-                        MapDescription description = new MapDescription(1, "", 1, utility, null,
+                        MapDescription description = new MapDescription(1, 1, utility, null,
                                 "First Responder", info, Calendar.getInstance().getTimeInMillis());
 
                         MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, coords.latitude, coords.longitude, "Incident", description);

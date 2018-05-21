@@ -7,9 +7,9 @@
     android:padding="10dp">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_severity_title"
@@ -20,18 +20,18 @@
 
         <Spinner
             android:id="@+id/spinner_severity"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
-            android:layout_marginBottom="5dp" />
+            android:textSize="14sp" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/text_people_title"
@@ -42,12 +42,12 @@
 
         <EditText
             android:id="@+id/text_people"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:inputType="number"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"
-            android:layout_marginBottom="5dp"
             tools:text="hello" />
 
     </LinearLayout>
@@ -63,6 +63,7 @@
         android:id="@+id/text_additional_info"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="5dp"
         android:layout_marginBottom="10dp"
         android:ellipsize="end"
         android:gravity="top"

@@ -2,8 +2,8 @@ package uk.co.mattjktaylor.gpig;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -72,9 +72,6 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         TextView numPeople = (TextView) view.findViewById(R.id.text_people);
         numPeople.setText(String.format(Locale.ENGLISH, "~%d", mapDescription.getNumPeople()));
 
-        TextView address = (TextView) view.findViewById(R.id.text_address);
-        address.setText(mapDescription.getAddress());
-
         TextView reportedBy = (TextView) view.findViewById(R.id.text_reported);
         reportedBy.setText(mapDescription.getReportBy());
 
@@ -96,32 +93,39 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         {
             LinearLayout utilitiesContainer = (LinearLayout) view.findViewById(R.id.utilities_container);
             utilitiesContainer.setVisibility(View.VISIBLE);
-
-            Switch gas = (Switch) view.findViewById(R.id.utilties_gas_switch);
-            gas.setChecked(mapDescription.getUtilities().isGas());
-
-            Switch water = (Switch) view.findViewById(R.id.utilties_water_switch);
-            water.setChecked(mapDescription.getUtilities().isWater());
-
-            Switch electricity = (Switch) view.findViewById(R.id.utilties_electricity_switch);
-            electricity.setChecked(mapDescription.getUtilities().isElectricity());
-
-            Switch sewage = (Switch) view.findViewById(R.id.utilties_sewage_switch);
-            sewage.setChecked(mapDescription.getUtilities().isSewage());
+            ImageView gas = (ImageView) view.findViewById(R.id.utilties_gas);
+            gas.setImageResource(getUtilityImg(mapDescription.getUtilities().isGas()));
+            ImageView water = (ImageView) view.findViewById(R.id.utilties_water);
+            water.setImageResource(getUtilityImg(mapDescription.getUtilities().isWater()));
+            ImageView electricity = (ImageView) view.findViewById(R.id.utilties_electricity);
+            electricity.setImageResource(getUtilityImg(mapDescription.getUtilities().isElectricity()));
+            ImageView sewage = (ImageView) view.findViewById(R.id.utilities_sewage);
+            sewage.setImageResource(getUtilityImg(mapDescription.getUtilities().isSewage()));
         }
 
-        if(mapDescription.getBuildingInfo() != null)
+        if(mapDescription.getAreaInfo() != null)
         {
             LinearLayout buildingInfoContainer = (LinearLayout) view.findViewById(R.id.building_info_container);
             buildingInfoContainer.setVisibility(View.VISIBLE);
 
+            TextView address = (TextView) view.findViewById(R.id.text_address);
+            address.setText(mapDescription.getAreaInfo().getAddress());
+
             TextView buildingType = (TextView) view.findViewById(R.id.text_building_type);
-            buildingType.setText(mapDescription.getBuildingInfo().getType());
+            buildingType.setText(mapDescription.getAreaInfo().getType());
 
             TextView buildingYear = (TextView) view.findViewById(R.id.text_building_year);
-            buildingYear.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getBuildingInfo().getYear()));
+            buildingYear.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getAreaInfo().getYear()));
         }
 
         return view;
+    }
+
+    private int getUtilityImg(boolean isSet)
+    {
+        if(isSet)
+            return R.drawable.ic_check_circle_green_24dp;
+        else
+            return R.drawable.ic_cancel_red_24dp;
     }
 }

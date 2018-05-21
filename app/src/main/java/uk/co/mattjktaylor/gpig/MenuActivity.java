@@ -10,12 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.model.LatLng;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Random;
 import java.util.UUID;
 
 public class MenuActivity extends AppCompatActivity {
@@ -69,7 +69,7 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_add_marker:
-                MapDescription desc = new MapDescription(50, "N/A", 0, null, null,
+                MapDescription desc = new MapDescription(50, 0, null, null,
                         null, "Test", Calendar.getInstance().getTimeInMillis());
                 mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), 0, 37.72961, -122.4269,
                         "Title 0", desc));
@@ -108,8 +108,8 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.73961, -122.4269));
 
                 MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
-                MapDescription.BuildingInfo bInfo = new MapDescription.BuildingInfo("Apartment Block", 1995);
-                MapDescription descr = new MapDescription(500, "Address", 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
+                MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo("Address", "Apartment Block", 1995);
+                MapDescription descr = new MapDescription(500, 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
                 mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 1, 0, coords, descr));
 
                 coords.clear();
@@ -124,8 +124,10 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.77961, -122.4069));
                 coords.add( new LatLng(37.77961, -122.4369));
                 coords.add( new LatLng(37.75961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), 3, 2,coords, descr));
 
+                MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), 3, 2,coords, descr);
+                mapFragment.addPolygon(p);
+                ClientUsage.sendPolygon(p);
                 return true;
 
             case R.id.action_settings:

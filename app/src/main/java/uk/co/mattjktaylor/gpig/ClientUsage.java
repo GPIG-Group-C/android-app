@@ -1,13 +1,15 @@
 package uk.co.mattjktaylor.gpig;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ClientUsage {
 
-    private static Gson gson = new Gson();
+    private static Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new NotificationSocketListener.LatLngSerializer()).create();
 
     public static void sendMarker(MapMarker m)
     {

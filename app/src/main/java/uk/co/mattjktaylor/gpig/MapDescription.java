@@ -3,10 +3,9 @@ package uk.co.mattjktaylor.gpig;
 public class MapDescription {
 
     private int numPeople;
-    private String address;
     private int status;
     private Utility utilities;
-    private BuildingInfo buildingInfo;
+    private AreaInfo areaInfo;
     private String reportBy;
     private String info;
 
@@ -15,18 +14,16 @@ public class MapDescription {
     public MapDescription() {}
 
     public MapDescription(int numPeople,
-                          String address,
                           int status,
                           Utility utilities,
-                          BuildingInfo buildingInfo,
+                          AreaInfo areaInfo,
                           String reportBy,
                           String info,
                           Long dateAdded) {
         this.numPeople = numPeople;
-        this.address = address;
         this.status = status;
         this.utilities = utilities;
-        this.buildingInfo = buildingInfo;
+        this.areaInfo = areaInfo;
         this.reportBy = reportBy;
         this.info = info;
         this.dateAdded = dateAdded;
@@ -60,10 +57,6 @@ public class MapDescription {
         return numPeople;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
     public int getStatus() {
         return status;
     }
@@ -72,8 +65,8 @@ public class MapDescription {
         return utilities;
     }
 
-    public BuildingInfo getBuildingInfo() {
-        return buildingInfo;
+    public AreaInfo getAreaInfo() {
+        return areaInfo;
     }
 
     public String getReportBy() {
@@ -124,14 +117,16 @@ public class MapDescription {
         }
     }
 
-    public static class BuildingInfo {
+    public static class AreaInfo {
 
         private String type;
         private int year;
+        private String address;
 
-        public BuildingInfo() {}
+        public AreaInfo() {}
 
-        public BuildingInfo(String type, int year) {
+        public AreaInfo(String address, String type, int year) {
+            this.address = address;
             this.type = type;
             this.year = year;
         }
@@ -142,6 +137,10 @@ public class MapDescription {
 
         public int getYear() {
             return year;
+        }
+
+        public String getAddress(){
+            return address;
         }
     }
 }
