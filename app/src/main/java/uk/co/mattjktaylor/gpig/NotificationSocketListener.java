@@ -3,11 +3,8 @@ package uk.co.mattjktaylor.gpig;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
@@ -24,11 +21,8 @@ import io.socket.emitter.Emitter;
 public final class NotificationSocketListener implements Emitter.Listener {
 
     private static List<OnNotificationListener> listeners = new ArrayList<OnNotificationListener>();
-    private static Gson gson;
-    static
-    {
-        gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngDeserializer()).create();
-    }
+    private static Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngSerializer()).create();
+
     private static NotificationSocketListener instance;
     private NotificationSocketListener(){}
 
@@ -74,6 +68,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
             switch (method)
             {
                 case "addMarker":
+                    Config.log(params.toString());
                     MapMarker m = gson.fromJson(params.toString(), MapMarker.class);
                     for (OnNotificationListener l : listeners)
                     {
@@ -112,25 +107,16 @@ public final class NotificationSocketListener implements Emitter.Listener {
         }
     }
 
-    public static class LatLngSerializer implements JsonSerializer<LatLng>{
+    public static class LatLngSerializer implements JsonSerializer<LatLng> {
 
         @Override
         public JsonElement serialize(LatLng src, Type typeOfSrc, JsonSerializationContext context) {
 
             JsonObject jsonObject = new JsonObject();
+            Config.log("Serialise...");
             jsonObject.add("lat", new JsonPrimitive(src.latitude));
             jsonObject.add("lng", new JsonPrimitive(src.longitude));
             return jsonObject;
-        }
-    }
-
-    public static class LatLngDeserializer implements JsonDeserializer<LatLng> {
-
-        @Override
-        public LatLng deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            JsonObject jObject = json.getAsJsonObject();
-            return new LatLng(jObject.get("lat").getAsDouble(), jObject.get("lng").getAsDouble());
         }
     }
 }

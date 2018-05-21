@@ -11,8 +11,8 @@ import java.util.ArrayList;
 
 public class MapMarker extends MapObject{
 
-    private Double latitude;
-    private Double longitude;
+    private Double lat;
+    private Double lng;
     private String title;
 
     // Do not serialise:
@@ -39,14 +39,18 @@ public class MapMarker extends MapObject{
     public MapMarker(String ID, int type, double lat, double lon, String title, MapDescription desc)
     {
         super(ID, type, desc);
-        this.latitude = lat;
-        this.longitude = lon;
+        this.lat = lat;
+        this.lng = lon;
         this.title = title;
     }
 
     public MarkerOptions getMarkerOptions()
     {
-        return new MarkerOptions().position(new LatLng(latitude, longitude)).title(title).snippet(getDescription().getInfo());
+        MarkerOptions mo = new MarkerOptions().position(new LatLng(lat, lng)).title(title);
+        if(getDescription() != null)
+            mo.snippet(getDescription().getInfo());
+        
+        return mo;
     }
 
     public void setMarker(Marker m, Context context)

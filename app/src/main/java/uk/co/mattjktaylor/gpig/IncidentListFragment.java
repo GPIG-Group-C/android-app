@@ -68,28 +68,39 @@ public class IncidentListFragment extends ListFragment implements OnNotification
 
     @Override
     public void addCircle(MapCircle c) {
-        adapter.notifyDataSetChanged();
+        updateList();
     }
 
     @Override
     public void addMarker(MapMarker m) {
-        adapter.notifyDataSetChanged();
+        updateList();
     }
 
     @Override
     public void addHeatMap(MapHeatMap h) {
-        adapter.notifyDataSetChanged();
+        updateList();
     }
 
     @Override
     public void addPolygon(MapPolygon p) {
-        adapter.notifyDataSetChanged();
+        updateList();
     }
 
     @Override
     public void onListUpdated() {
-        Config.log("List updating...");
-        adapter.notifyDataSetChanged();
+        updateList();
+    }
+
+    private void updateList()
+    {
+        getActivity().runOnUiThread(new Runnable() {
+
+            @Override
+            public void run()
+            {
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     public static class IncidentAdapter extends BaseAdapter
