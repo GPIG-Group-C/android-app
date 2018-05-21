@@ -1,6 +1,7 @@
 package uk.co.mattjktaylor.gpig;
 
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -20,6 +21,11 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.TileOverlay;
+import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.maps.android.heatmaps.Gradient;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import java.util.ArrayList;
 
@@ -27,6 +33,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
+    private HeatmapTileProvider mProvider;
+    private TileOverlay heatMap;
 
     public static ArrayList<MapObject> mapObjects = new ArrayList<>();
 
@@ -181,10 +189,42 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     //hh.getMapMarker().getMarker().remove();
                     hh.getHeatmap().remove();
                 }
-
-                h.setHeatmap(googleMap.addTileOverlay(h.getTileOverlayOptions()));
-                //addMarker(h.getMapMarker());
                 mapObjects.add(h);
+
+                ArrayList<WeightedLatLng> heatMapLst = new ArrayList<>();
+                for (MapObject i : mapObjects){
+                    if (i instanceof MapHeatMap){
+                        heatMapLst.add(((MapHeatMap) i).getWeightedLatLng());
+                    }
+
+                }
+
+                // Create a heat map tile provider, passing it the latlngs of the police stations.
+                mProvider = new HeatmapTileProvider.Builder().weightedData(heatMapLst).build();
+                mProvider.setRadius(25);
+
+                // Create the gradient.
+                int[] colors = {
+                        Color.rgb(255, 255, 0), // yellow
+                        Color.rgb(255, 100, 0), // orange
+                        Color.rgb(255, 0, 0), // red
+                };
+
+                float[] startPoints = {
+                        0.2f, 0.7f, 1.0f
+                };
+
+                Gradient gradient = new Gradient(colors, startPoints);
+                mProvider.setGradient(gradient);
+
+                if (! (heatMap == null)) {
+                    heatMap.remove();
+                }
+
+                mProvider.setWeightedData(heatMapLst);
+                heatMap = googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(mProvider));
+                //addMarker(h.getMapMarker());
+
                 NotificationSocketListener.notifyListUpdate();
             }
         });

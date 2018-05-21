@@ -40,32 +40,12 @@ public class MapHeatMap extends MapObject{
         //mapMarker = new MapMarker(ID, -1, lat, lon, "heatmap title", null, dateRecorded);
     }
 
-    public TileOverlayOptions getTileOverlayOptions() {
-        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
-        list.add(new WeightedLatLng(new LatLng(this.latitude, this.longitude), this.intensity));
-
-        // Create a heat map tile provider, passing it the latlngs of the police stations.
-        HeatmapTileProvider mProvider = new HeatmapTileProvider.Builder()
-                .weightedData(list)
-                .build();
-        mProvider.setRadius(this.radius);
-
-        // Create the gradient.
-        int[] colors = {
-                Color.rgb(255, 255, 0), // yellow
-                Color.rgb(255, 100, 0), // orange
-                Color.rgb(255, 0, 0), // red
-        };
-
-        float[] startPoints = {
-                0.2f, 0.7f, 1.0f
-        };
-
-        Gradient gradient = new Gradient(colors, startPoints);
-        mProvider.setGradient(gradient);
-
-        return new TileOverlayOptions().tileProvider(mProvider);
-    }
+//    public TileOverlayOptions getTileOverlayOptions() {
+//        ArrayList<WeightedLatLng> list = new ArrayList<WeightedLatLng>();
+//        list.add(new WeightedLatLng(new LatLng(this.latitude, this.longitude), this.intensity));
+//
+//        return new TileOverlayOptions().tileProvider(mProvider);
+//    }
 
     public void setHeatmap(TileOverlay h) {
         this.heatmap = heatmap;
@@ -77,6 +57,10 @@ public class MapHeatMap extends MapObject{
 
     public TileOverlay getHeatmap() {
         return heatmap;
+    }
+
+    public WeightedLatLng getWeightedLatLng(){
+        return  new WeightedLatLng(new LatLng(latitude, longitude), intensity);
     }
 
 }

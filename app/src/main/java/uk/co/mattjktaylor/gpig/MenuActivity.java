@@ -15,6 +15,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Random;
 import java.util.UUID;
 
 public class MenuActivity extends AppCompatActivity {
@@ -93,8 +94,11 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_add_heatmap:
-                mapFragment.addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961, -122.4169, 40, 10.0, Calendar.getInstance().getTimeInMillis()));
-                mapFragment.addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.76961, -122.4369, 50, 5.0, Calendar.getInstance().getTimeInMillis()));
+                for (int i=0; i<10; i++){
+                    double random = - 0.05 + Math.random() * (0.05 - (- 0.05));
+                    double intensity = 2 + Math.random() * (10 - 1);
+                    mapFragment.addHeatMap(new MapHeatMap(UUID.randomUUID().toString(), 37.74961 + random, -122.4169 +random, 40, intensity, Calendar.getInstance().getTimeInMillis()));
+                }
                 return true;
 
             case R.id.action_add_polygon:
