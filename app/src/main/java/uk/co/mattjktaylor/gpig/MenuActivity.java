@@ -69,8 +69,8 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_add_marker:
-                MapDescription desc = new MapDescription(50, 0, null, null,
-                        null, "Test", Calendar.getInstance().getTimeInMillis());
+                MapDescription desc = new MapDescription(new MapDescription.Incident(1, "First Responder", "...", false, false)
+                        , null, null, Calendar.getInstance().getTimeInMillis());
                 mapFragment.addMarker(new MapMarker(UUID.randomUUID().toString(), "gas", 37.72961, -122.4269,
                         "Title 0", desc));
                 return true;
@@ -94,16 +94,18 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.73961, -122.4269));
 
                 MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
-                MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo("Address", "Apartment Block", 1995);
-                MapDescription descr = new MapDescription(500, 1, util, bInfo, "First Responder","Testing", Calendar.getInstance().getTimeInMillis());
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), "fire", 0, coords, descr));
+                MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo(1, 100,"Address", "Apartment Block", 1995);
+                MapDescription.Incident incident = new MapDescription.Incident(0, "First Responder", "...", false, false);
+
+                MapDescription descr = new MapDescription(incident, util, bInfo, Calendar.getInstance().getTimeInMillis());
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.71961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), "fire", 1, coords, descr));
+                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), coords, descr));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
@@ -111,7 +113,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.77961, -122.4369));
                 coords.add( new LatLng(37.75961, -122.4369));
 
-                MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), "fire", 2,coords, descr);
+                MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), coords, descr);
                 mapFragment.addPolygon(p);
                 ClientUsage.sendPolygon(p);
                 return true;

@@ -29,7 +29,7 @@ import com.google.maps.android.heatmaps.WeightedLatLng;
 
 import java.util.ArrayList;
 
-public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
+public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
     private static MapView mMapView;
     private static GoogleMap googleMap;
@@ -67,6 +67,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         googleMap.setOnMapLongClickListener(this);
         googleMap.setInfoWindowAdapter(new CustomInfoWindow(getActivity()));
         googleMap.setOnInfoWindowClickListener(this);
+        googleMap.setOnMarkerClickListener(this);
         googleMap.setOnPolygonClickListener(this);
 
         // Set map style:
@@ -90,6 +91,13 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     {
         IncidentDialog dialog = new IncidentDialog(getActivity(), this, latLng);
         dialog.show();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        setCameraPosBottom(marker.getPosition());
+        marker.showInfoWindow();
+        return true;
     }
 
     @Override
@@ -251,6 +259,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 p.setMarker(googleMap.addMarker(new MarkerOptions().alpha(0).position(pos)
                         .anchor((float) pos.latitude, (float) pos.longitude)
                         .infoWindowAnchor((float) pos.latitude, (float) pos.longitude)));
+
                 mapObjects.add(p);
                 NotificationSocketListener.notifyListUpdate();
             }

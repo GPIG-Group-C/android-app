@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -15,12 +17,20 @@ import java.util.Locale;
 public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
     private Activity activity;
-    public static ArrayList<String> severities = new ArrayList<>();
+    public static ArrayList<String> mStatus = new ArrayList<>();
     static
     {
-        severities.add("Fire Extinguished");
-        severities.add("Fire Contained");
-        severities.add("Fire Escalating");
+        mStatus.add("Fire Extinguished");
+        mStatus.add("Fire Contained");
+        mStatus.add("Fire Escalating");
+    }
+
+    public static ArrayList<String> mSeverity = new ArrayList<>();
+    static
+    {
+        mSeverity.add("Low");
+        mSeverity.add("Medium");
+        mSeverity.add("High");
     }
 
     public CustomInfoWindow(Activity activity)
@@ -39,6 +49,8 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
     {
         MapFragment.setCameraPosBottom(marker.getPosition());
 
+        boolean isPolygon = false;
+        String type = "";
         MapDescription mapDescription = null;
         for(MapObject mapObject : MapFragment.mapObjects)
         {
@@ -47,6 +59,8 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
                 MapPolygon p = (MapPolygon) mapObject;
                 if(p.getMarker().getId().equals(marker.getId()))
                 {
+                    isPolygon = true;
+                    type = p.getType();
                     mapDescription = p.getDescription();
                     break;
                 }
@@ -56,6 +70,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
                 MapMarker m = (MapMarker) mapObject;
                 if(m.getMarker().getId().equals(marker.getId()))
                 {
+                    type = m.getType();
                     mapDescription = m.getDescription();
                     break;
                 }
@@ -64,30 +79,36 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         if(mapDescription == null)
             return null;
 
-        View view = activity.getLayoutInflater().inflate(R.layout.map_infowindow, null);
+        if(isPolygon)
+            return getAreaView(mapDescription);
+        else
+            return getIncidentView(type, mapDescription);
+    }
+
+    private View getAreaView(MapDescription mapDescription)
+    {
+        if(mapDescription.getAreaInfo() == null)
+            return null;
+
+        View view = activity.getLayoutInflater().inflate(R.layout.infowindow_area, null);
 
         TextView sev = (TextView) view.findViewById(R.id.text_severity);
-        sev.setText(severities.get(mapDescription.getStatus()));
+        sev.setText(mSeverity.get(mapDescription.getAreaInfo().getSeverity()));
 
         TextView numPeople = (TextView) view.findViewById(R.id.text_people);
-        numPeople.setText(String.format(Locale.ENGLISH, "~%d", mapDescription.getNumPeople()));
+        numPeople.setText(String.format(Locale.ENGLISH, "~%d", mapDescription.getAreaInfo().getNumPeople()));
 
-        TextView reportedBy = (TextView) view.findViewById(R.id.text_reported);
-        reportedBy.setText(mapDescription.getReportBy());
+        TextView updatedAt = (TextView) view.findViewById(R.id.text_time);
+        updatedAt.setText(Config.getFormattedDate(mapDescription.getDateAdded(), "dd/MM/yy HH:mm:ss"));
 
-        TextView reportedAt = (TextView) view.findViewById(R.id.text_time);
-        reportedAt.setText(Config.getFormattedDate(mapDescription.getDateAdded(), "dd/MM/yy HH:mm:ss"));
+        TextView address = (TextView) view.findViewById(R.id.text_address);
+        address.setText(mapDescription.getAreaInfo().getAddress());
 
-        TextView additionalInfo = (TextView) view.findViewById(R.id.text_additional_info);
-        if(mapDescription.getInfo().isEmpty())
-        {
-            view.findViewById(R.id.text_additional_info_title).setVisibility(View.GONE);
-            additionalInfo.setVisibility(View.GONE);
-        }
-        else
-        {
-            additionalInfo.setText(mapDescription.getInfo());
-        }
+        TextView buildingType = (TextView) view.findViewById(R.id.text_building_type);
+        buildingType.setText(mapDescription.getAreaInfo().getType());
+
+        TextView buildingYear = (TextView) view.findViewById(R.id.text_building_year);
+        buildingYear.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getAreaInfo().getYear()));
 
         if(mapDescription.getUtilities() != null)
         {
@@ -103,19 +124,52 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
             sewage.setImageResource(getUtilityImg(mapDescription.getUtilities().isSewage()));
         }
 
-        if(mapDescription.getAreaInfo() != null)
+        return view;
+    }
+
+    private View getIncidentView(String type, MapDescription mapDescription)
+    {
+        if(mapDescription.getIncident() == null)
+            return null;
+
+        View view = activity.getLayoutInflater().inflate(R.layout.infowindow_incident, null);
+
+        TextView typeText = (TextView) view.findViewById(R.id.text_type);
+        typeText.setText(IncidentDialog.incidentDesc.get(type));
+
+        TextView status = (TextView) view.findViewById(R.id.text_status);
+        status.setText(mStatus.get(mapDescription.getIncident().getStatus()));
+
+        TextView reportedBy = (TextView) view.findViewById(R.id.text_reported);
+        reportedBy.setText(mapDescription.getIncident().getReportBy());
+
+        TextView updatedAt = (TextView) view.findViewById(R.id.text_time);
+        updatedAt.setText(Config.getFormattedDate(mapDescription.getDateAdded(), "dd/MM/yy HH:mm:ss"));
+
+        TextView address = (TextView) view.findViewById(R.id.text_address);
+        address.setText("N/A");
+
+        TextView info = (TextView) view.findViewById(R.id.text_additional_info);
+        info.setText(mapDescription.getIncident().getInfo());
+
+        ImageView medicIcon = (ImageView) view.findViewById(R.id.medic_icon);
+        medicIcon.setImageResource(getUtilityImg(mapDescription.getIncident().isMedicNeeded()));
+
+        ImageView dangerIcon = (ImageView) view.findViewById(R.id.danger_icon);
+        dangerIcon.setImageResource(getUtilityImg(mapDescription.getIncident().isPeopleDanger()));
+
+        if(mapDescription.getUtilities() != null)
         {
-            LinearLayout buildingInfoContainer = (LinearLayout) view.findViewById(R.id.building_info_container);
-            buildingInfoContainer.setVisibility(View.VISIBLE);
-
-            TextView address = (TextView) view.findViewById(R.id.text_address);
-            address.setText(mapDescription.getAreaInfo().getAddress());
-
-            TextView buildingType = (TextView) view.findViewById(R.id.text_building_type);
-            buildingType.setText(mapDescription.getAreaInfo().getType());
-
-            TextView buildingYear = (TextView) view.findViewById(R.id.text_building_year);
-            buildingYear.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getAreaInfo().getYear()));
+            LinearLayout utilitiesContainer = (LinearLayout) view.findViewById(R.id.utilities_container);
+            utilitiesContainer.setVisibility(View.VISIBLE);
+            ImageView gas = (ImageView) view.findViewById(R.id.utilties_gas);
+            gas.setImageResource(getUtilityImg(mapDescription.getUtilities().isGas()));
+            ImageView water = (ImageView) view.findViewById(R.id.utilties_water);
+            water.setImageResource(getUtilityImg(mapDescription.getUtilities().isWater()));
+            ImageView electricity = (ImageView) view.findViewById(R.id.utilties_electricity);
+            electricity.setImageResource(getUtilityImg(mapDescription.getUtilities().isElectricity()));
+            ImageView sewage = (ImageView) view.findViewById(R.id.utilities_sewage);
+            sewage.setImageResource(getUtilityImg(mapDescription.getUtilities().isSewage()));
         }
 
         return view;

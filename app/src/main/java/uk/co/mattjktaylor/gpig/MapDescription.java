@@ -2,63 +2,34 @@ package uk.co.mattjktaylor.gpig;
 
 public class MapDescription {
 
-    private int numPeople;
-    private int status;
     private Utility utilities;
     private AreaInfo areaInfo;
-    private String reportBy;
-    private String info;
-
+    private Incident incident;
     private Long dateAdded;
 
     public MapDescription() {}
 
-    public MapDescription(int numPeople,
-                          int status,
+    public MapDescription(Incident incident,
                           Utility utilities,
                           AreaInfo areaInfo,
-                          String reportBy,
-                          String info,
-                          Long dateAdded) {
-        this.numPeople = numPeople;
-        this.status = status;
+                          Long dateAdded)
+    {
+        this.incident = incident;
         this.utilities = utilities;
         this.areaInfo = areaInfo;
-        this.reportBy = reportBy;
-        this.info = info;
         this.dateAdded = dateAdded;
-    }
-
-    public void setNumPeople(int numPeople) {
-        this.numPeople = numPeople;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
     }
 
     public void setUtilities(Utility utilities) {
         this.utilities = utilities;
     }
 
-    public void setReportBy(String reportBy) {
-        this.reportBy = reportBy;
-    }
-
-    public void setInfo(String info) {
-        this.info = info;
-    }
-
     public void setDateAdded(Long dateAdded) {
         this.dateAdded = dateAdded;
     }
 
-    public int getNumPeople() {
-        return numPeople;
-    }
-
-    public int getStatus() {
-        return status;
+    public Incident getIncident() {
+        return incident;
     }
 
     public Utility getUtilities() {
@@ -69,16 +40,66 @@ public class MapDescription {
         return areaInfo;
     }
 
-    public String getReportBy() {
-        return reportBy;
-    }
-
-    public String getInfo() {
-        return info;
-    }
-
     public Long getDateAdded() {
         return dateAdded;
+    }
+
+    public static class Incident{
+        private int status;
+        private String reportBy;
+        private String info;
+        private boolean peopleDanger;
+        private boolean medicNeeded;
+
+        public Incident() {}
+
+        public Incident(int status, String reportBy, String info, boolean peopleDanger, boolean medicNeeded) {
+            this.status = status;
+            this.reportBy = reportBy;
+            this.info = info;
+            this.peopleDanger = peopleDanger;
+            this.medicNeeded = medicNeeded;
+        }
+
+        public int getStatus() {
+            return status;
+        }
+
+        public String getReportBy() {
+            return reportBy;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+
+        public boolean isPeopleDanger() {
+            return peopleDanger;
+        }
+
+        public boolean isMedicNeeded() {
+            return medicNeeded;
+        }
+
+        public void setReportBy(String reportBy) {
+            this.reportBy = reportBy;
+        }
+
+        public void setInfo(String info) {
+            this.info = info;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
+        public void setPeopleDanger(boolean peopleDanger) {
+            this.peopleDanger = peopleDanger;
+        }
+
+        public void setMedicNeeded(boolean medicNeeded) {
+            this.medicNeeded = medicNeeded;
+        }
     }
 
     public static class Utility {
@@ -119,16 +140,25 @@ public class MapDescription {
 
     public static class AreaInfo {
 
+        private int severity;
+        private int numPeople;
         private String type;
         private int year;
         private String address;
 
         public AreaInfo() {}
 
-        public AreaInfo(String address, String type, int year) {
+        public AreaInfo(int severity, int numPeople, String address, String type, int year) {
+            this.severity = severity;
+            this.numPeople = numPeople;
             this.address = address;
             this.type = type;
             this.year = year;
+        }
+
+        public int getSeverity()
+        {
+            return severity;
         }
 
         public String getType() {
@@ -141,6 +171,15 @@ public class MapDescription {
 
         public String getAddress(){
             return address;
+        }
+
+        public int getNumPeople()
+        {
+            return numPeople;
+        }
+
+        public void setNumPeople(int numPeople) {
+            this.numPeople = numPeople;
         }
     }
 }

@@ -5,18 +5,31 @@
     android:layout_height="fill_parent"
     android:padding="20dp">
 
-        <TextView
-            android:id="@+id/text_incident_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Incident type:"
-            android:layout_marginBottom="2dp"
-            android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
-        <Spinner
-            android:id="@+id/spinner_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"/>
+    <TextView
+        android:id="@+id/text_incident_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Incident type:"
+        android:layout_marginBottom="2dp"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+    <Spinner
+        android:id="@+id/spinner_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/text_incident_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp"
+        android:text="Incident status:"
+        android:textAppearance="@android:style/TextAppearance.Material.Widget.TextView" />
+    <Spinner
+        android:id="@+id/spinner_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"/>
 
     <Switch
         android:id="@+id/switch_danger"

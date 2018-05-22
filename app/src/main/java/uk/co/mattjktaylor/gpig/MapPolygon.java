@@ -9,7 +9,6 @@ import java.util.ArrayList;
 
 public class MapPolygon extends MapObject{
 
-    private int severity;
     private ArrayList<LatLng> coords;
     private MapDescription desc;
 
@@ -18,10 +17,9 @@ public class MapPolygon extends MapObject{
 
     public MapPolygon() {}
 
-    public MapPolygon(String ID, String type, int severity, ArrayList<LatLng> coords, MapDescription desc)
+    public MapPolygon(String ID, ArrayList<LatLng> coords, MapDescription desc)
     {
-        super(ID, type, desc);
-        this.severity = severity;
+        super(ID, null, desc);
         this.coords = coords;
         this.desc = desc;
     }
@@ -33,7 +31,7 @@ public class MapPolygon extends MapObject{
 
         int polyColour = 0x220000FF;
         // 40% transparency = 0x64
-        switch (severity)
+        switch (desc.getAreaInfo().getSeverity())
         {
             case 0:
                 // Yellow
@@ -66,10 +64,6 @@ public class MapPolygon extends MapObject{
     public void setMarker(Marker m)
     {
         marker = m;
-    }
-
-    public int getSeverity(){
-        return severity;
     }
 
     public Marker getMarker()

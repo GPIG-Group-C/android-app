@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class IncidentListFragment extends ListFragment implements OnNotificationListener{
 
     private IncidentAdapter adapter;
@@ -37,7 +40,7 @@ public class IncidentListFragment extends ListFragment implements OnNotification
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         MenuActivity.panel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
-        MapObject mapObject = MapFragment.mapObjects.get(position);
+        MapObject mapObject = IncidentAdapter.getMapObjects().get(position);
         if(mapObject instanceof MapPolygon)
         {
             MapPolygon p = (MapPolygon) mapObject;
@@ -114,14 +117,25 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             this.inflater = LayoutInflater.from(context);
         }
 
+        public static List<MapObject> getMapObjects()
+        {
+            ArrayList<MapObject> nonPolygons = new ArrayList<>();
+            for(MapObject o : MapFragment.mapObjects)
+            {
+                if(!(o instanceof MapPolygon))
+                    nonPolygons.add(o);
+            }
+            return nonPolygons;
+        }
+
         @Override
         public int getCount() {
-            return MapFragment.mapObjects.size();
+            return getMapObjects().size();
         }
 
         @Override
         public MapObject getItem(int i) {
-            return MapFragment.mapObjects.get(i);
+            return getMapObjects().get(i);
         }
 
         @Override
@@ -137,7 +151,9 @@ public class IncidentListFragment extends ListFragment implements OnNotification
                 view = inflater.inflate(R.layout.incident_list_item, viewGroup, false);
             }
 
-            MapObject mapObject = MapFragment.mapObjects.get(i);
+            MapObject mapObject = getMapObjects().get(i);
+            if(mapObject.getType() == null)
+                return null;
 
             ImageView icon = (ImageView) view.findViewById(R.id.incident_icon);
             icon.setImageResource(MapMarker.iconDictionary.get(mapObject.getType()));
@@ -145,9 +161,9 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             if(mapObject.getDescription() != null)
             {
                 TextView title = (TextView) view.findViewById(R.id.incident_title);
-                title.setText(mapObject.getDescription().getInfo());
+                title.setText(mapObject.getDescription().getIncident().getInfo());
                 TextView reportedBy = (TextView) view.findViewById(R.id.incident_reportedBy);
-                reportedBy.setText(mapObject.getDescription().getReportBy());
+                reportedBy.setText(mapObject.getDescription().getIncident().getReportBy());
                 TextView incidentTime = (TextView) view.findViewById(R.id.incident_time);
                 incidentTime.setText(Config.getFormattedDate(mapObject.getDescription().getDateAdded(), "dd/MM/yy HH:mm:ss"));
             }

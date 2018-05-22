@@ -9,13 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.UUID;
 
 public class IncidentDialog extends AlertDialog.Builder {
@@ -25,16 +25,28 @@ public class IncidentDialog extends AlertDialog.Builder {
     private MapFragment map;
     private Marker marker;
 
-    public static transient HashMap<String, String> dropdown;
+    public static transient HashMap<String, String> incidentDesc;
     static
     {
-        dropdown = new HashMap<String, String>();
-        dropdown.put("Gas Leak", "gas");
-        dropdown.put("Fire", "fire");
-        dropdown.put("Blocked Road", "blocked");
-        dropdown.put("Collapsed Building", "collapse");
-        dropdown.put("Water Leak", "water");
-        dropdown.put("Electricity Fault", "electricity");
+        incidentDesc = new HashMap<String, String>();
+        incidentDesc.put("gas", "Gas Leak");
+        incidentDesc.put("fire", "Fire");
+        incidentDesc.put("blocked", "Blocked Road");
+        incidentDesc.put("collapse", "Collapsed Building");
+        incidentDesc.put("water", "Water Leak");
+        incidentDesc.put("electricity", "Electricity Fault");
+    }
+
+    public static transient HashMap<String, String> dropdownVal;
+    static
+    {
+        dropdownVal = new HashMap<String, String>();
+        dropdownVal.put("Gas Leak", "gas");
+        dropdownVal.put("Fire", "fire");
+        dropdownVal.put("Blocked Road", "blocked");
+        dropdownVal.put("Collapsed Building", "collapse");
+        dropdownVal.put("Water Leak", "water");
+        dropdownVal.put("Electricity Fault", "electricity");
     }
 
     public IncidentDialog(Activity activity, MapFragment map, LatLng coords)
@@ -43,7 +55,7 @@ public class IncidentDialog extends AlertDialog.Builder {
         this.activity = activity;
         this.map = map;
         this.coords = coords;
-        updateDialog();
+        markerDialog();
     }
 
     public IncidentDialog(Activity activity, Marker marker)
@@ -51,18 +63,25 @@ public class IncidentDialog extends AlertDialog.Builder {
         super(activity);
         this.activity = activity;
         this.marker = marker;
-        markerDialog();
+        updateDialog();
     }
 
-    private void updateDialog()
+    private void markerDialog()
     {
         LayoutInflater inflater = activity.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_incident, null);
+
         // Setup spinner for incident types:
-        Spinner spinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, dropdown.keySet().toArray(new String[dropdown.size()]));
+        Spinner spinnerType = (Spinner) dialogView.findViewById(R.id.spinner_type);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, dropdownVal.keySet().toArray(new String[dropdownVal.size()]));
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        spinnerType.setAdapter(adapter);
+
+        // Setup spinner for incident types:
+        Spinner spinnerStatus = (Spinner) dialogView.findViewById(R.id.spinner_status);
+        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(activity, R.layout.spinner_item, CustomInfoWindow.mStatus);
+        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerStatus.setAdapter(adapterType);
 
         // Show dialog using created view:
         setTitle("Add Incident At Location");
@@ -76,13 +95,20 @@ public class IncidentDialog extends AlertDialog.Builder {
                         String info = infoDescription.getText().toString();
 
                         Spinner typeSpinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-                        String type = dropdown.get(typeSpinner.getSelectedItem().toString());
+                        String type = dropdownVal.get(typeSpinner.getSelectedItem().toString());
+
+                        Spinner statusSpinner = (Spinner) dialogView.findViewById(R.id.spinner_status);
+                        int status = statusSpinner.getSelectedItemPosition();
+
+                        Switch dangerSwitch = (Switch) dialogView.findViewById(R.id.switch_danger);
+                        boolean danger = dangerSwitch.isChecked();
+
+                        Switch medicSwitch = (Switch) dialogView.findViewById(R.id.switch_medic);
+                        boolean medic = medicSwitch.isChecked();
 
                         // Add new marker using form data:
-                        MapDescription.Utility utility = new MapDescription.Utility();
-                        MapDescription description = new MapDescription(1, 1, utility, null,
-                                "First Responder", info, Calendar.getInstance().getTimeInMillis());
-
+                        MapDescription.Incident incident = new MapDescription.Incident(status, "First Responder", info, danger, medic);
+                        MapDescription description = new MapDescription(incident, null, null, Calendar.getInstance().getTimeInMillis());
                         MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, coords.latitude, coords.longitude, "Incident", description);
                         // Add to map:
                         map.addMarker(m);
@@ -94,7 +120,7 @@ public class IncidentDialog extends AlertDialog.Builder {
     }
 
     // TODO Needs refactoring:
-    private void markerDialog()
+    private void updateDialog()
     {
         marker.hideInfoWindow();
 
@@ -129,20 +155,29 @@ public class IncidentDialog extends AlertDialog.Builder {
 
         // Get layout view for new incident:
         LayoutInflater inflater = activity.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_incident_update, null);
+        final View dialogView = inflater.inflate(R.layout.dialog_incident, null);
 
-        // Populate using existing data:
-        final Spinner spinner_sev = (Spinner) dialogView.findViewById(R.id.spinner_severity);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, CustomInfoWindow.severities);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_sev.setAdapter(adapter);
-        spinner_sev.setSelection(mapDescription.getStatus());
+        // Hide type:
+        Spinner spinner_type = (Spinner) dialogView.findViewById(R.id.spinner_type);
+        TextView text_type = (TextView) dialogView.findViewById(R.id.text_incident_type);
+        spinner_type.setVisibility(View.GONE);
+        text_type.setVisibility(View.GONE);
 
-        final EditText people = (EditText) dialogView.findViewById(R.id.text_people);
-        people.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getNumPeople()));
-        final EditText info = (EditText) dialogView.findViewById(R.id.text_additional_info);
-        info.setText(mapDescription.getInfo());
+        final Spinner spinner_status= (Spinner) dialogView.findViewById(R.id.spinner_status);
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(activity, R.layout.spinner_item, CustomInfoWindow.mStatus);
+        adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_status.setAdapter(adapterStatus);
+        spinner_status.setSelection(mapDescription.getIncident().getStatus());
 
+        final EditText info = (EditText) dialogView.findViewById(R.id.edit_description);
+        info.setText(mapDescription.getIncident().getInfo());
+
+        final Switch dangerSwitch = (Switch) dialogView.findViewById(R.id.switch_danger);
+        dangerSwitch.setChecked(mapDescription.getIncident().isPeopleDanger());
+        final Switch medicSwitch = (Switch) dialogView.findViewById(R.id.switch_medic);
+        medicSwitch.setChecked(mapDescription.getIncident().isMedicNeeded());
+
+        /*
         final Switch switchGas = (Switch) dialogView.findViewById(R.id.utilties_gas_switch);
         final Switch switchElec = (Switch) dialogView.findViewById(R.id.utilties_electricity_switch);
         final Switch switchWater = (Switch) dialogView.findViewById(R.id.utilties_water_switch);
@@ -156,6 +191,7 @@ public class IncidentDialog extends AlertDialog.Builder {
             switchWater.setChecked(mapDescription.getUtilities().isWater());
             switchSewage.setChecked(mapDescription.getUtilities().isSewage());
         }
+        */
 
         // TODO refactor:
         final MapDescription mapDescription_ = mapDescription;
@@ -170,14 +206,17 @@ public class IncidentDialog extends AlertDialog.Builder {
                     @Override
                     public void onClick(DialogInterface dialog, int id)
                     {
-                        mapDescription_.setStatus(spinner_sev.getSelectedItemPosition());
-                        mapDescription_.setInfo(info.getText().toString());
+                        mapDescription_.getIncident().setStatus(spinner_status.getSelectedItemPosition());
+                        mapDescription_.getIncident().setInfo(info.getText().toString());
                         mapDescription_.setDateAdded(Calendar.getInstance().getTimeInMillis());
-                        mapDescription_.setNumPeople(Integer.parseInt(people.getText().toString()));
-                        mapDescription_.setReportBy("First Responder");
+                        mapDescription_.getIncident().setReportBy("First Responder");
+                        mapDescription_.getIncident().setMedicNeeded(medicSwitch.isChecked());
+                        mapDescription_.getIncident().setPeopleDanger(dangerSwitch.isChecked());
 
+                        /*
                         if(mapDescription_.getUtilities() != null)
                             mapDescription_.setUtilities(new MapDescription.Utility(switchGas.isChecked(), switchElec.isChecked(), switchWater.isChecked(), switchSewage.isChecked()));
+                        */
 
                         if(mapMarker_ != null)
                             ClientUsage.sendMarker(mapMarker_);
