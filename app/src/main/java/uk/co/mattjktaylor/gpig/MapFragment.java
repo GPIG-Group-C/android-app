@@ -103,6 +103,23 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     @Override
     public void onInfoWindowClick(Marker marker)
     {
+        for(MapObject mapObject : mapObjects)
+        {
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getMarker() != null)
+                {
+                    if(p.getMarker().getId().equals(marker.getId()))
+                    {
+                        marker.hideInfoWindow();
+                        return;
+                    }
+                }
+
+            }
+        }
+
         IncidentDialog dialog = new IncidentDialog(getActivity(), marker);
         dialog.show();
     }
@@ -260,6 +277,26 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                         .anchor((float) pos.latitude, (float) pos.longitude)
                         .infoWindowAnchor((float) pos.latitude, (float) pos.longitude)));
 
+                mapObjects.add(p);
+                NotificationSocketListener.notifyListUpdate();
+            }
+        });
+    }
+
+    @Override
+    public void addTransparentPolygon(final MapTransparentPolygon p)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                int index = mapObjects.indexOf(p);
+                if(index != -1)
+                {
+                    MapTransparentPolygon mp = (MapTransparentPolygon) mapObjects.get(index);
+                    mp.getPolygon().remove();
+                }
+                p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
                 mapObjects.add(p);
                 NotificationSocketListener.notifyListUpdate();
             }

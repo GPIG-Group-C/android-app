@@ -5,5 +5,6 @@ public interface OnNotificationListener {
     public void addMarker(MapMarker m);
     public void addHeatMap(MapHeatMap h);
     public void addPolygon(MapPolygon p);
+    public void addTransparentPolygon(MapTransparentPolygon p);
     public void onListUpdated();
 }

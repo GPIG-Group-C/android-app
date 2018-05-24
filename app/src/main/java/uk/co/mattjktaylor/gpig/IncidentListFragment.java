@@ -16,6 +16,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class IncidentListFragment extends ListFragment implements OnNotificationListener{
 
@@ -70,24 +71,19 @@ public class IncidentListFragment extends ListFragment implements OnNotification
     }
 
     @Override
-    public void addCircle(MapCircle c) {
-        updateList();
-    }
+    public void addCircle(MapCircle c) { }
 
     @Override
-    public void addMarker(MapMarker m) {
-        updateList();
-    }
+    public void addMarker(MapMarker m) { }
 
     @Override
-    public void addHeatMap(MapHeatMap h) {
-        updateList();
-    }
+    public void addHeatMap(MapHeatMap h) { }
 
     @Override
-    public void addPolygon(MapPolygon p) {
-        updateList();
-    }
+    public void addPolygon(MapPolygon p) { }
+
+    @Override
+    public void addTransparentPolygon(MapTransparentPolygon p) { }
 
     @Override
     public void onListUpdated() {
@@ -122,7 +118,7 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             ArrayList<MapObject> nonPolygons = new ArrayList<>();
             for(MapObject o : MapFragment.mapObjects)
             {
-                if(!(o instanceof MapPolygon))
+                if(o instanceof MapMarker)
                     nonPolygons.add(o);
             }
             return nonPolygons;
@@ -156,21 +152,22 @@ public class IncidentListFragment extends ListFragment implements OnNotification
                 return null;
 
             ImageView icon = (ImageView) view.findViewById(R.id.incident_icon);
-            icon.setImageResource(MapMarker.iconDictionary.get(mapObject.getType()));
+            icon.setImageResource(IncidentTypes.getIncidentType(mapObject.getType()).getIcon());
+
+            TextView title = (TextView) view.findViewById(R.id.incident_title);
+            title.setText(IncidentTypes.getIncidentType(mapObject.getType()).getDescription());
 
             if(mapObject.getDescription() != null)
             {
-                TextView title = (TextView) view.findViewById(R.id.incident_title);
-                title.setText(mapObject.getDescription().getIncident().getInfo());
                 TextView reportedBy = (TextView) view.findViewById(R.id.incident_reportedBy);
                 reportedBy.setText(mapObject.getDescription().getIncident().getReportBy());
                 TextView incidentTime = (TextView) view.findViewById(R.id.incident_time);
                 incidentTime.setText(Config.getFormattedDate(mapObject.getDescription().getDateAdded(), "dd/MM/yy HH:mm:ss"));
+
+                TextView incidentSeverity = (TextView) view.findViewById(R.id.incident_severity);
+                String status = IncidentTypes.getIncidentType(mapObject.getType()).getStatus().get(mapObject.getDescription().getIncident().getStatus());
+                incidentSeverity.setText(String.format(Locale.ENGLISH, "Status: %s", status));
             }
-
-            TextView incidentSeverity = (TextView) view.findViewById(R.id.incident_severity);
-            incidentSeverity.setText("Severity: Type specific...");
-
             return view;
         }
     }

@@ -114,7 +114,6 @@
                 android:id="@+id/text_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAllCaps="true"
                 tools:text="High" />
 
             <TextView
@@ -172,7 +171,7 @@
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:layout_width="fill_parent"

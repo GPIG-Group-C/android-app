@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.UUID;
 
 public class IncidentDialog extends AlertDialog.Builder {
@@ -24,30 +24,6 @@ public class IncidentDialog extends AlertDialog.Builder {
     private LatLng coords;
     private MapFragment map;
     private Marker marker;
-
-    public static transient HashMap<String, String> incidentDesc;
-    static
-    {
-        incidentDesc = new HashMap<String, String>();
-        incidentDesc.put("gas", "Gas Leak");
-        incidentDesc.put("fire", "Fire");
-        incidentDesc.put("blocked", "Blocked Road");
-        incidentDesc.put("collapse", "Collapsed Building");
-        incidentDesc.put("water", "Water Leak");
-        incidentDesc.put("electricity", "Electricity Fault");
-    }
-
-    public static transient HashMap<String, String> dropdownVal;
-    static
-    {
-        dropdownVal = new HashMap<String, String>();
-        dropdownVal.put("Gas Leak", "gas");
-        dropdownVal.put("Fire", "fire");
-        dropdownVal.put("Blocked Road", "blocked");
-        dropdownVal.put("Collapsed Building", "collapse");
-        dropdownVal.put("Water Leak", "water");
-        dropdownVal.put("Electricity Fault", "electricity");
-    }
 
     public IncidentDialog(Activity activity, MapFragment map, LatLng coords)
     {
@@ -66,6 +42,33 @@ public class IncidentDialog extends AlertDialog.Builder {
         updateDialog();
     }
 
+    public static String getMarkerType(Marker marker)
+    {
+        for(MapObject mapObject : MapFragment.mapObjects)
+        {
+            if(mapObject instanceof MapPolygon)
+            {
+                MapPolygon p = (MapPolygon) mapObject;
+                if(p.getMarker() != null)
+                {
+                    if(p.getMarker().getId().equals(marker.getId()))
+                    {
+                        return p.getType();
+                    }
+                }
+            }
+            else if(mapObject instanceof MapMarker)
+            {
+                MapMarker m = (MapMarker) mapObject;
+                if(m.getMarker().getId().equals(marker.getId()))
+                {
+                    return m.getType();
+                }
+            }
+        }
+        return null;
+    }
+
     private void markerDialog()
     {
         LayoutInflater inflater = activity.getLayoutInflater();
@@ -73,15 +76,30 @@ public class IncidentDialog extends AlertDialog.Builder {
 
         // Setup spinner for incident types:
         Spinner spinnerType = (Spinner) dialogView.findViewById(R.id.spinner_type);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, dropdownVal.keySet().toArray(new String[dropdownVal.size()]));
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, R.layout.spinner_item, IncidentTypes.getDescriptons());
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerType.setAdapter(adapter);
 
         // Setup spinner for incident types:
-        Spinner spinnerStatus = (Spinner) dialogView.findViewById(R.id.spinner_status);
-        ArrayAdapter<String> adapterType = new ArrayAdapter<String>(activity, R.layout.spinner_item, CustomInfoWindow.mStatus);
-        adapterType.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerStatus.setAdapter(adapterType);
+        final Spinner spinnerStatus = (Spinner) dialogView.findViewById(R.id.spinner_status);
+        String description = spinnerType.getSelectedItem().toString();
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(activity, R.layout.spinner_item, IncidentTypes.getTypeFromDesc(description).getStatus());
+        adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerStatus.setAdapter(adapterStatus);
+
+        spinnerType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                String description = adapterView.getSelectedItem().toString();
+                ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(activity, R.layout.spinner_item, IncidentTypes.getTypeFromDesc(description).getStatus());
+                adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinnerStatus.setAdapter(adapterStatus);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
 
         // Show dialog using created view:
         setTitle("Add Incident At Location");
@@ -95,7 +113,8 @@ public class IncidentDialog extends AlertDialog.Builder {
                         String info = infoDescription.getText().toString();
 
                         Spinner typeSpinner = (Spinner) dialogView.findViewById(R.id.spinner_type);
-                        String type = dropdownVal.get(typeSpinner.getSelectedItem().toString());
+                        String type = IncidentTypes.getTypeFromDesc(typeSpinner.getSelectedItem().toString()).getID();
+                        Config.log("Type: " + type);
 
                         Spinner statusSpinner = (Spinner) dialogView.findViewById(R.id.spinner_status);
                         int status = statusSpinner.getSelectedItemPosition();
@@ -109,7 +128,8 @@ public class IncidentDialog extends AlertDialog.Builder {
                         // Add new marker using form data:
                         MapDescription.Incident incident = new MapDescription.Incident(status, "First Responder", info, danger, medic);
                         MapDescription description = new MapDescription(incident, null, null, Calendar.getInstance().getTimeInMillis());
-                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, coords.latitude, coords.longitude, "Incident", description);
+                        MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, coords.latitude, coords.longitude,
+                                IncidentTypes.getIncidentType(type).getDescription(), description);
                         // Add to map:
                         map.addMarker(m);
                         // Send to server:
@@ -129,6 +149,7 @@ public class IncidentDialog extends AlertDialog.Builder {
         MapMarker mapMarker = null;
         MapPolygon mapPolygon = null;
         MapDescription mapDescription = null;
+        String type = "";
         for(MapObject mapObject : MapFragment.mapObjects)
         {
             if(mapObject instanceof MapMarker)
@@ -138,6 +159,7 @@ public class IncidentDialog extends AlertDialog.Builder {
                 {
                     mapMarker = m;
                     mapDescription = m.getDescription();
+                    type = m.getType();
                     break;
                 }
             }
@@ -148,6 +170,7 @@ public class IncidentDialog extends AlertDialog.Builder {
                 {
                     mapPolygon = p;
                     mapDescription = p.getDescription();
+                    type = p.getType();
                     break;
                 }
             }
@@ -164,7 +187,7 @@ public class IncidentDialog extends AlertDialog.Builder {
         text_type.setVisibility(View.GONE);
 
         final Spinner spinner_status= (Spinner) dialogView.findViewById(R.id.spinner_status);
-        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(activity, R.layout.spinner_item, CustomInfoWindow.mStatus);
+        ArrayAdapter<String> adapterStatus = new ArrayAdapter<String>(activity, R.layout.spinner_item, IncidentTypes.getIncidentType(type).getStatus());
         adapterStatus.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_status.setAdapter(adapterStatus);
         spinner_status.setSelection(mapDescription.getIncident().getStatus());

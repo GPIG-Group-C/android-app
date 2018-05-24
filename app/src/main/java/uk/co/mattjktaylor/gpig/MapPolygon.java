@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class MapPolygon extends MapObject{
 
-    private ArrayList<LatLng> coords;
+    protected ArrayList<LatLng> coords;
     private MapDescription desc;
 
     private transient Polygon polygon;

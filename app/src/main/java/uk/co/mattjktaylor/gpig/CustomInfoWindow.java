@@ -8,30 +8,12 @@ import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.squareup.picasso.NetworkPolicy;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
 
     private Activity activity;
-    public static ArrayList<String> mStatus = new ArrayList<>();
-    static
-    {
-        mStatus.add("Fire Extinguished");
-        mStatus.add("Fire Contained");
-        mStatus.add("Fire Escalating");
-    }
-
-    public static ArrayList<String> mSeverity = new ArrayList<>();
-    static
-    {
-        mSeverity.add("Low");
-        mSeverity.add("Medium");
-        mSeverity.add("High");
-    }
 
     public CustomInfoWindow(Activity activity)
     {
@@ -57,12 +39,15 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
             if(mapObject instanceof MapPolygon)
             {
                 MapPolygon p = (MapPolygon) mapObject;
-                if(p.getMarker().getId().equals(marker.getId()))
+                if(p.getMarker() != null)
                 {
-                    isPolygon = true;
-                    type = p.getType();
-                    mapDescription = p.getDescription();
-                    break;
+                    if(p.getMarker().getId().equals(marker.getId()))
+                    {
+                        isPolygon = true;
+                        type = p.getType();
+                        mapDescription = p.getDescription();
+                        break;
+                    }
                 }
             }
             else if(mapObject instanceof MapMarker)
@@ -93,7 +78,7 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         View view = activity.getLayoutInflater().inflate(R.layout.infowindow_area, null);
 
         TextView sev = (TextView) view.findViewById(R.id.text_severity);
-        sev.setText(mSeverity.get(mapDescription.getAreaInfo().getSeverity()));
+        sev.setText(String.format(Locale.ENGLISH, "%d", mapDescription.getAreaInfo().getSeverity()));
 
         TextView numPeople = (TextView) view.findViewById(R.id.text_people);
         numPeople.setText(String.format(Locale.ENGLISH, "~%d", mapDescription.getAreaInfo().getNumPeople()));
@@ -135,10 +120,10 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         View view = activity.getLayoutInflater().inflate(R.layout.infowindow_incident, null);
 
         TextView typeText = (TextView) view.findViewById(R.id.text_type);
-        typeText.setText(IncidentDialog.incidentDesc.get(type));
+        typeText.setText(IncidentTypes.getIncidentType(type).getDescription());
 
         TextView status = (TextView) view.findViewById(R.id.text_status);
-        status.setText(mStatus.get(mapDescription.getIncident().getStatus()));
+        status.setText(IncidentTypes.getIncidentType(type).getStatus().get(mapDescription.getIncident().getStatus()));
 
         TextView reportedBy = (TextView) view.findViewById(R.id.text_reported);
         reportedBy.setText(mapDescription.getIncident().getReportBy());

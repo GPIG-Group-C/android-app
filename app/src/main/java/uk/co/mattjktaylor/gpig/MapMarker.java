@@ -7,8 +7,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.HashMap;
-
 public class MapMarker extends MapObject{
 
     private Double lat;
@@ -17,20 +15,6 @@ public class MapMarker extends MapObject{
 
     // Do not serialise:
     private transient Marker marker;
-
-    public static transient HashMap<String, Integer> iconDictionary;
-    static
-    {
-        iconDictionary = new HashMap<String, Integer>();
-        iconDictionary.put("gas", R.drawable.ic_gas_pipe);
-        iconDictionary.put("fire", R.drawable.ic_fire);
-        iconDictionary.put("blocked", R.drawable.ic_blocked);
-        iconDictionary.put("medic", R.drawable.ic_medic);
-        iconDictionary.put("earthquake", R.drawable.ic_earthquake);
-        iconDictionary.put("collapse", R.drawable.ic_collapse);
-        iconDictionary.put("water", R.drawable.ic_water);
-        iconDictionary.put("electricity", R.drawable.ic_electricity);
-    }
 
     // Initialised using Gson
     public MapMarker() {}
@@ -60,7 +44,7 @@ public class MapMarker extends MapObject{
             m.setAlpha(0);
         else
         {
-            int resourceID = iconDictionary.get(getType());
+            int resourceID = IncidentTypes.getIncidentType(getType()).getIcon();
             if(resourceID != -1)
                 m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, resourceID)));
         }

@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.maps.model.LatLng;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -105,7 +104,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addPolygon(new MapPolygon(UUID.randomUUID().toString(), coords, descr));
+                mapFragment.addTransparentPolygon(new MapTransparentPolygon(UUID.randomUUID().toString(), coords));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
