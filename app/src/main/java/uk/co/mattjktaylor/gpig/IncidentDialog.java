@@ -166,12 +166,16 @@ public class IncidentDialog extends AlertDialog.Builder {
             else if(mapObject instanceof MapPolygon)
             {
                 MapPolygon p = (MapPolygon) mapObject;
-                if(p.getMarker().getId().equals(marker.getId()))
+
+                if(p.getMarker() != null)
                 {
-                    mapPolygon = p;
-                    mapDescription = p.getDescription();
-                    type = p.getType();
-                    break;
+                    if(p.getMarker().getId().equals(marker.getId()))
+                    {
+                        mapPolygon = p;
+                        mapDescription = p.getDescription();
+                        type = p.getType();
+                        break;
+                    }
                 }
             }
         }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -89,6 +90,12 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     @Override
     public void onMapLongClick(final LatLng latLng)
     {
+        if(!Config.isFirstResponder(getContext()))
+        {
+            Toast.makeText(getContext(), "You are not a first responder...", Toast.LENGTH_LONG).show();
+            return;
+        }
+
         IncidentDialog dialog = new IncidentDialog(getActivity(), this, latLng);
         dialog.show();
     }
@@ -118,6 +125,12 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 }
 
             }
+        }
+
+        if(!Config.isFirstResponder(getContext()))
+        {
+            Toast.makeText(getContext(), "You are not a first responder...", Toast.LENGTH_LONG).show();
+            return;
         }
 
         IncidentDialog dialog = new IncidentDialog(getActivity(), marker);

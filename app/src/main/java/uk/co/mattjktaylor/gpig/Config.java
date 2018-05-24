@@ -47,6 +47,12 @@ public final class Config {
         return settings.getString("PORT", "");
     }
 
+    public static boolean isFirstResponder(Context mContext)
+    {
+        SharedPreferences settings = mContext.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        return settings.getBoolean("RESPONDER", true);
+    }
+
     public static Boolean isValidIP(String url)
     {
         return Patterns.IP_ADDRESS.matcher(url).matches();
