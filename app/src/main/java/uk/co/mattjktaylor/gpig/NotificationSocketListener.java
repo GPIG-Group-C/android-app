@@ -3,12 +3,18 @@ package uk.co.mattjktaylor.gpig;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +66,32 @@ public final class NotificationSocketListener implements Emitter.Listener {
         if(args.length == 0 || listeners == null)
             return;
 
-        JSONObject json = (JSONObject)args[0];
+        Object obj = args[0];
+        try
+        {
+            if(obj instanceof JSONArray)
+            {
+                JSONArray jsonArray = (JSONArray) obj;
+                Config.log(jsonArray.toString());
+                for(int i = 0; i < jsonArray.length(); i++)
+                {
+                    parseJsonRpc(jsonArray.getJSONObject(i));
+                }
+            }
+            else if(obj instanceof JSONObject)
+            {
+                JSONObject jsonObj= (JSONObject) obj;
+                parseJsonRpc(jsonObj);
+            }
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseJsonRpc(JSONObject json)
+    {
         try
         {
             String method = json.getString("method");
@@ -94,6 +125,13 @@ public final class NotificationSocketListener implements Emitter.Listener {
 
                 case "addPolygon":
                     MapPolygon p = gson.fromJson(params.toString(), MapPolygon.class);
+
+                    // Parse coordinates seperately:
+                    JSONArray coordJson = params.getJSONArray("coords");
+                    Type listType = new TypeToken<ArrayList<LatLng>>(){}.getType();
+                    ArrayList<LatLng> coords = gson.fromJson(coordJson.toString(), listType);
+                    p.setCoords(coords);;
+
                     for (OnNotificationListener l : listeners)
                     {
                         l.addPolygon(p);
@@ -107,16 +145,22 @@ public final class NotificationSocketListener implements Emitter.Listener {
         }
     }
 
-    public static class LatLngSerializer implements JsonSerializer<LatLng> {
+    public static class LatLngSerializer implements JsonSerializer<LatLng>, JsonDeserializer<LatLng> {
 
         @Override
         public JsonElement serialize(LatLng src, Type typeOfSrc, JsonSerializationContext context) {
 
             JsonObject jsonObject = new JsonObject();
-            Config.log("Serialise...");
             jsonObject.add("lat", new JsonPrimitive(src.latitude));
             jsonObject.add("lng", new JsonPrimitive(src.longitude));
             return jsonObject;
+        }
+
+        @Override
+        public LatLng deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        {
+            JsonObject o = json.getAsJsonObject();
+            return new LatLng(o.get("lat").getAsDouble(), o.get("lng").getAsDouble());
         }
     }
 }

@@ -184,7 +184,6 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     MapMarker mm = (MapMarker) mapObjects.get(index);
                     mm.getMarker().remove();
                     mapObjects.remove(index);
-                    Config.log("Success...");
                 }
 
                 m.setMarker(googleMap.addMarker(m.getMarkerOptions()), getContext());
@@ -283,6 +282,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     mp.getPolygon().remove();
                 }
 
+                Config.log("Add polygon...");
                 p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
 
                 LatLng pos = p.getAverageCoords();

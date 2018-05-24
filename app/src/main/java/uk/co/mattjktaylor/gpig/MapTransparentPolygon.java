@@ -11,9 +11,12 @@ import java.util.Arrays;
 
 public class MapTransparentPolygon extends MapPolygon {
 
-    public MapTransparentPolygon(String ID, ArrayList<LatLng> coords)
+    private int colour;
+
+    public MapTransparentPolygon(String ID, int colour, ArrayList<LatLng> coords)
     {
         super(ID, coords,  null);
+        this.colour = colour;
     }
 
     @Override
@@ -22,6 +25,7 @@ public class MapTransparentPolygon extends MapPolygon {
         PolygonOptions po = new PolygonOptions();
         po.add(coords.toArray(new LatLng[coords.size()]));
         po.strokePattern(Arrays.<PatternItem>asList(new Dash(15), new Gap(10)));
+        po.strokeColor(colour);
         po.strokeWidth(4);
         po.clickable(false);
         return po;

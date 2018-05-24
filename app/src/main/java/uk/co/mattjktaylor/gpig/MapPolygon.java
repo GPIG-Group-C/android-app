@@ -1,5 +1,7 @@
 package uk.co.mattjktaylor.gpig;
 
+import android.graphics.Color;
+
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.Polygon;
@@ -29,24 +31,11 @@ public class MapPolygon extends MapObject{
         PolygonOptions po = new PolygonOptions();
         po.add(coords.toArray(new LatLng[coords.size()]));
 
-        int polyColour = 0x220000FF;
         // 40% transparency = 0x64
-        switch (desc.getAreaInfo().getSeverity())
+        int polyColour = 0x220000FF;
+        if(desc != null)
         {
-            case 0:
-                // Yellow
-                polyColour = 0x64FFFF00;
-                break;
-
-            case 1:
-                // Orange
-                polyColour = 0x64FF9900;
-                break;
-
-            case 2:
-                // Red
-                polyColour = 0x64FF0000;
-                break;
+            polyColour = blendColors(Color.rgb(255,0,0), Color.rgb(255,255,0), (desc.getAreaInfo().getSeverity()/10f), 0x64);
         }
 
         po.fillColor(polyColour);
@@ -54,6 +43,21 @@ public class MapPolygon extends MapObject{
         po.clickable(true);
 
         return po;
+    }
+
+    private static int blendColors(int color1, int color2, float ratio, int alpha)
+    {
+        final float inverseRation = 1.0f - ratio;
+
+        float r = (Color.red(color1) * ratio) + (Color.red(color2) * inverseRation);
+        float g = (Color.green(color1) * ratio) + (Color.green(color2) * inverseRation);
+        float b = (Color.blue(color1) * ratio) + (Color.blue(color2) * inverseRation);
+        return Color.argb(alpha, (int) r, (int) g, (int) b);
+    }
+
+    public void setCoords(ArrayList<LatLng> coords)
+    {
+        this.coords = coords;
     }
 
     public void setPolygon(Polygon p)

@@ -2,6 +2,7 @@ package uk.co.mattjktaylor.gpig;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.os.Bundle;
@@ -93,7 +94,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.73961, -122.4269));
 
                 MapDescription.Utility util = new MapDescription.Utility(true, false, false, true);
-                MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo(1, 100,"Address", "Apartment Block", 1995);
+                MapDescription.AreaInfo bInfo = new MapDescription.AreaInfo(10, 100,"Address", "Apartment Block", 1995);
                 MapDescription.Incident incident = new MapDescription.Incident(0, "First Responder", "...", false, false);
 
                 MapDescription descr = new MapDescription(incident, util, bInfo, Calendar.getInstance().getTimeInMillis());
@@ -104,7 +105,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addTransparentPolygon(new MapTransparentPolygon(UUID.randomUUID().toString(), coords));
+                mapFragment.addTransparentPolygon(new MapTransparentPolygon(UUID.randomUUID().toString(), 0xFFFF0000, coords));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));
