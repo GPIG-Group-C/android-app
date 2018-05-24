@@ -61,7 +61,11 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
                 }
             }
         }
+
         if(mapDescription == null)
+            return null;
+
+        if(!IncidentTypes.getIncidentType(type).isClickable())
             return null;
 
         if(isPolygon)

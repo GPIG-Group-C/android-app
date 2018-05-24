@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
     <PreferenceCategory
         android:title="Server Settings">
         <EditTextPreference
@@ -17,4 +16,12 @@
             android:title="Port" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="User Settings">
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="RESPONDER"
+            android:title="First Responder"
+            android:summary="Can edit and add new incidents"/>
+    </PreferenceCategory>
 </PreferenceScreen>
