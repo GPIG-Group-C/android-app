@@ -24,11 +24,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
+import com.google.gson.Gson;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
@@ -85,6 +93,43 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             e.printStackTrace();
         }
         centerMap();
+        loadFireStations();
+    }
+
+    private void loadFireStations()
+    {
+        String json = null;
+        try
+        {
+            InputStream is = getResources().openRawResource(R.raw.fire_stations);
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+            if(json != null)
+            {
+                try
+                {
+                    Gson gson = new Gson();
+                    JSONArray stations = new JSONArray(json);
+                    for (int i = 0; i < stations.length(); i++)
+                    {
+                        JSONObject station = stations.getJSONObject(i);
+                        MapMarker m = gson.fromJson(station.toString(), MapMarker.class);
+                        addMarker(m);
+                    }
+                }
+                catch (JSONException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+        catch (IOException ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     @Override

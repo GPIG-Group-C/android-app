@@ -1,5 +1,7 @@
 package uk.co.mattjktaylor.gpig;
 
+import android.graphics.Color;
+
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
@@ -11,9 +13,9 @@ import java.util.Arrays;
 
 public class MapTransparentPolygon extends MapPolygon {
 
-    private int colour;
+    private String colour;
 
-    public MapTransparentPolygon(String ID, int colour, ArrayList<LatLng> coords)
+    public MapTransparentPolygon(String ID, String colour, ArrayList<LatLng> coords)
     {
         super(ID, coords,  null);
         this.colour = colour;
@@ -25,7 +27,7 @@ public class MapTransparentPolygon extends MapPolygon {
         PolygonOptions po = new PolygonOptions();
         po.add(coords.toArray(new LatLng[coords.size()]));
         po.strokePattern(Arrays.<PatternItem>asList(new Dash(15), new Gap(10)));
-        po.strokeColor(colour);
+        po.strokeColor(Color.parseColor(colour));
         po.strokeWidth(4);
         po.clickable(false);
         return po;

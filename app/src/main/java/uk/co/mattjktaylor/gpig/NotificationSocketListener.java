@@ -101,9 +101,12 @@ public final class NotificationSocketListener implements Emitter.Listener {
                 case "addMarker":
                     Config.log(params.toString());
                     MapMarker m = gson.fromJson(params.toString(), MapMarker.class);
-                    for (OnNotificationListener l : listeners)
+                    if(IncidentTypes.getTypes().contains(m.getType()))
                     {
-                        l.addMarker(m);
+                        for (OnNotificationListener l : listeners)
+                        {
+                            l.addMarker(m);
+                        }
                     }
                     break;
 
@@ -125,6 +128,9 @@ public final class NotificationSocketListener implements Emitter.Listener {
 
                 case "addPolygon":
                     MapPolygon p = gson.fromJson(params.toString(), MapPolygon.class);
+                    Config.log(params.toString());
+                    if(p.getDescription() != null)
+                        Config.log("p not null");
 
                     // Parse coordinates seperately:
                     JSONArray coordJson = params.getJSONArray("coords");
@@ -135,6 +141,20 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     for (OnNotificationListener l : listeners)
                     {
                         l.addPolygon(p);
+                    }
+                    break;
+
+                case "addTransparentPolygon":
+                    MapTransparentPolygon tP = gson.fromJson(params.toString(), MapTransparentPolygon.class);
+                    // Parse coordinates seperately:
+                    JSONArray tCoordJson = params.getJSONArray("coords");
+                    Type tListType = new TypeToken<ArrayList<LatLng>>(){}.getType();
+                    ArrayList<LatLng> tCoords = gson.fromJson(tCoordJson.toString(), tListType);
+                    tP.setCoords(tCoords);;
+
+                    for (OnNotificationListener l : listeners)
+                    {
+                        l.addTransparentPolygon(tP);
                     }
                     break;
             }

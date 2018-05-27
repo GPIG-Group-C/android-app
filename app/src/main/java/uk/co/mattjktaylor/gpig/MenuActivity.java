@@ -105,7 +105,7 @@ public class MenuActivity extends AppCompatActivity {
                 coords.add( new LatLng(37.72961, -122.4069));
                 coords.add( new LatLng(37.72961, -122.4369));
                 coords.add( new LatLng(37.71961, -122.4369));
-                mapFragment.addTransparentPolygon(new MapTransparentPolygon(UUID.randomUUID().toString(), 0xFFFF0000, coords));
+                mapFragment.addTransparentPolygon(new MapTransparentPolygon(UUID.randomUUID().toString(), "#b0279c", coords));
 
                 coords.clear();
                 coords.add( new LatLng(37.75961, -122.4069));

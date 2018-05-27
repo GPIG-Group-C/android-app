@@ -7,7 +7,7 @@ public class MapDescription {
     private Incident incident;
     private Long dateAdded;
 
-    public MapDescription() {}
+    public MapDescription(){ }
 
     public MapDescription(Incident incident,
                           Utility utilities,
@@ -18,10 +18,6 @@ public class MapDescription {
         this.utilities = utilities;
         this.areaInfo = areaInfo;
         this.dateAdded = dateAdded;
-    }
-
-    public void setUtilities(Utility utilities) {
-        this.utilities = utilities;
     }
 
     public void setDateAdded(Long dateAdded) {
@@ -178,8 +174,5 @@ public class MapDescription {
             return numPeople;
         }
 
-        public void setNumPeople(int numPeople) {
-            this.numPeople = numPeople;
-        }
     }
 }

@@ -37,6 +37,11 @@ public class IncidentTypes{
         return types.get(ID);
     }
 
+    public static ArrayList<String> getTypes()
+    {
+        return new ArrayList<String>(types.keySet());
+    }
+
     public static IncidentType getTypeFromDesc(String desc)
     {
         for(IncidentType incidentType : types.values())

@@ -35,7 +35,15 @@ public class MapPolygon extends MapObject{
         int polyColour = 0x220000FF;
         if(desc != null)
         {
-            polyColour = blendColors(Color.rgb(255,0,0), Color.rgb(255,255,0), (desc.getAreaInfo().getSeverity()/10f), 0x64);
+            int sev = desc.getAreaInfo().getSeverity();
+            if(sev < 5)
+            {
+                polyColour = blendColors(Color.rgb(0,255,0), Color.rgb(255,255,0), (sev/5f), 0x64);
+            }
+            else
+            {
+                polyColour = blendColors(Color.rgb(255,255,0), Color.rgb(255,0,0), ((sev-5)/5f), 0x64);
+            }
         }
 
         po.fillColor(polyColour);
