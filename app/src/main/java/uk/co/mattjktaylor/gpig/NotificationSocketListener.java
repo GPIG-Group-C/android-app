@@ -3,7 +3,6 @@ package uk.co.mattjktaylor.gpig;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -127,10 +126,8 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     break;
 
                 case "addPolygon":
+
                     MapPolygon p = gson.fromJson(params.toString(), MapPolygon.class);
-                    Config.log(params.toString());
-                    if(p.getDescription() != null)
-                        Config.log("p not null");
 
                     // Parse coordinates seperately:
                     JSONArray coordJson = params.getJSONArray("coords");
@@ -166,7 +163,6 @@ public final class NotificationSocketListener implements Emitter.Listener {
     }
 
     public static class LatLngSerializer implements JsonSerializer<LatLng>, JsonDeserializer<LatLng> {
-
         @Override
         public JsonElement serialize(LatLng src, Type typeOfSrc, JsonSerializationContext context) {
 

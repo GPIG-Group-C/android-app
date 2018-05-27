@@ -63,7 +63,10 @@ public class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
         }
 
         if(mapDescription == null)
+        {
+            Config.log("Desc is null");
             return null;
+        }
 
         if(type != null && !type.isEmpty())
         {

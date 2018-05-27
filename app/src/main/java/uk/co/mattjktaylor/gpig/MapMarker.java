@@ -31,7 +31,7 @@ public class MapMarker extends MapObject{
     public MarkerOptions getMarkerOptions()
     {
         MarkerOptions mo = new MarkerOptions().position(new LatLng(lat, lng)).title(title);
-        if(getDescription() != null)
+        if(getDescription() != null && getDescription().getIncident() != null)
             mo.snippet(getDescription().getIncident().getInfo());
         
         return mo;

@@ -4,7 +4,7 @@ public class MapObject {
 
     private String ID;
     private String type;
-    private MapDescription description;
+    private MapDescription desc;
 
     public MapObject(){}
 
@@ -12,7 +12,7 @@ public class MapObject {
     {
         this.ID = ID;
         this.type = type;
-        this.description = description;
+        this.desc = description;
     }
 
     public String getID() {
@@ -24,7 +24,7 @@ public class MapObject {
     }
 
     public MapDescription getDescription() {
-        return description;
+        return desc;
     }
 
     @Override

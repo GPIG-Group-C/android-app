@@ -12,18 +12,16 @@ import java.util.ArrayList;
 public class MapPolygon extends MapObject{
 
     protected ArrayList<LatLng> coords;
-    private MapDescription desc;
 
     private transient Polygon polygon;
     private transient Marker marker;
 
-    public MapPolygon() {}
+    public MapPolygon() { }
 
     public MapPolygon(String ID, ArrayList<LatLng> coords, MapDescription desc)
     {
         super(ID, null, desc);
         this.coords = coords;
-        this.desc = desc;
     }
 
     public PolygonOptions getPolygonOptions()
@@ -33,9 +31,9 @@ public class MapPolygon extends MapObject{
 
         // 40% transparency = 0x64
         int polyColour = 0x220000FF;
-        if(desc != null)
+        if(getDescription() != null)
         {
-            int sev = desc.getAreaInfo().getSeverity();
+            int sev = getDescription().getAreaInfo().getSeverity();
             if(sev < 5)
             {
                 polyColour = blendColors(Color.rgb(0,255,0), Color.rgb(255,255,0), (sev/5f), 0x64);

@@ -148,7 +148,7 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             }
 
             MapObject mapObject = getMapObjects().get(i);
-            if(mapObject.getType() == null)
+            if(!IncidentTypes.getTypes().contains(mapObject.getType()))
                 return null;
 
             ImageView icon = (ImageView) view.findViewById(R.id.incident_icon);
@@ -157,7 +157,7 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             TextView title = (TextView) view.findViewById(R.id.incident_title);
             title.setText(IncidentTypes.getIncidentType(mapObject.getType()).getDescription());
 
-            if(mapObject.getDescription() != null)
+            if(mapObject.getDescription() != null && mapObject.getDescription().getIncident() != null)
             {
                 TextView reportedBy = (TextView) view.findViewById(R.id.incident_reportedBy);
                 reportedBy.setText(mapObject.getDescription().getIncident().getReportBy());
