@@ -48,6 +48,8 @@ public class MapMarker extends MapObject{
             if(resourceID != -1)
                 m.setIcon(BitmapDescriptorFactory.fromBitmap(Config.getBitmapFromVectorDrawable(context, resourceID)));
         }
+
+        NotificationSocketListener.updateSeverity(this);
     }
 
     public Marker getMarker()

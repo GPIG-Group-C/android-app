@@ -152,6 +152,11 @@ public class MapDescription {
             this.year = year;
         }
 
+        public void setSeverity(int severity)
+        {
+            this.severity = severity;
+        }
+
         public int getSeverity()
         {
             return severity;

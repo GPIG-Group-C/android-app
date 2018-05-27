@@ -12,6 +12,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+import com.google.maps.android.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -102,10 +103,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     MapMarker m = gson.fromJson(params.toString(), MapMarker.class);
                     if(IncidentTypes.getTypes().contains(m.getType()))
                     {
-                        for (OnNotificationListener l : listeners)
-                        {
-                            l.addMarker(m);
-                        }
+                        addMarker(m);
                     }
                     break;
 
@@ -126,7 +124,6 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     break;
 
                 case "addPolygon":
-
                     MapPolygon p = gson.fromJson(params.toString(), MapPolygon.class);
 
                     // Parse coordinates seperately:
@@ -159,6 +156,52 @@ public final class NotificationSocketListener implements Emitter.Listener {
         catch(JSONException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public static void addMarker(MapMarker m)
+    {
+        for (OnNotificationListener l : listeners)
+        {
+            l.addMarker(m);
+        }
+    }
+
+    public static void updateSeverity(MapMarker m)
+    {
+        if(m.getMarker() == null)
+            return;
+
+        for(MapObject mo : MapFragment.mapObjects)
+        {
+            if(mo instanceof MapPolygon && !(mo instanceof MapTransparentPolygon))
+            {
+                MapPolygon p = (MapPolygon) mo;
+                if(PolyUtil.containsLocation(m.getMarker().getPosition(), p.getPolygon().getPoints(), true))
+                {
+                    Config.log("Updating polygon sev...");
+
+                    boolean medicNeeded = m.getDescription().getIncident().isMedicNeeded();
+                    boolean peopleDanger = m.getDescription().getIncident().isPeopleDanger();
+                    int newSev = 1;
+
+                    if(peopleDanger && medicNeeded)
+                        newSev = 10;
+                    else if(peopleDanger)
+                        newSev = 8;
+                    else if(medicNeeded)
+                        newSev = 6;
+                    else
+                        newSev = 4;
+
+                    p.getDescription().getAreaInfo().setSeverity(newSev);
+                    for (OnNotificationListener l : listeners)
+                    {
+                        l.addPolygon(p);
+                    }
+                    return;
+                }
+            }
         }
     }
 

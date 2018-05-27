@@ -131,7 +131,7 @@ public class IncidentDialog extends AlertDialog.Builder {
                         MapMarker m = new MapMarker(UUID.randomUUID().toString(), type, coords.latitude, coords.longitude,
                                 IncidentTypes.getIncidentType(type).getDescription(), description);
                         // Add to map:
-                        map.addMarker(m);
+                        NotificationSocketListener.addMarker(m);
                         // Send to server:
                         ClientUsage.sendMarker(m);
 

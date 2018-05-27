@@ -26,6 +26,9 @@ public class ClientUsage {
         {
             e.printStackTrace();
         }
+
+        // Update polygons:
+        NotificationSocketListener.updateSeverity(m);
     }
 
     public static void sendCircle(MapCircle c)
