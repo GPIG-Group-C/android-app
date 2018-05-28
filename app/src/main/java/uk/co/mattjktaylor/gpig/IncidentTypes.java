@@ -24,7 +24,7 @@ public class IncidentTypes{
         types.put(GAS, new IncidentType(GAS, "Gas Leak", R.drawable.ic_gas_pipe, Arrays.<String>asList("Gas Contained", "Gas Leaking"), true));
         types.put(FIRE, new IncidentType(FIRE, "Fire", R.drawable.ic_fire, Arrays.<String>asList("Fire Extinguished", "Fire Contained", "Fire Escalating"), true));
         types.put(BLOCKED_ROAD, new IncidentType(BLOCKED_ROAD, "Blocked Road", R.drawable.ic_blocked, Arrays.<String>asList("Road Cleared", "Road Blocked"), true));
-        types.put(MEDIC_NEEDED, new IncidentType(MEDIC_NEEDED, "Medic Needed", R.drawable.ic_medic, Arrays.<String>asList("N/A"), true));
+        types.put(MEDIC_NEEDED, new IncidentType(MEDIC_NEEDED, "Medic Needed", R.drawable.ic_medic, Arrays.<String>asList("N/A"), false));
         types.put(EARTHQUAKE, new IncidentType(EARTHQUAKE, "Earthquake", R.drawable.ic_earthquake, Arrays.<String>asList("N/A"), false));
         types.put(COLLAPSE, new IncidentType(COLLAPSE, "Collapsed Building", R.drawable.ic_collapse, Arrays.<String>asList("N/A"), true));
         types.put(WATER_LEAK, new IncidentType(WATER_LEAK, "Water Leak", R.drawable.ic_water, Arrays.<String>asList("Water Contained", " Water Leaking"), true));

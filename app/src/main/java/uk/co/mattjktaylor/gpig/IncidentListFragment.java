@@ -119,7 +119,10 @@ public class IncidentListFragment extends ListFragment implements OnNotification
             for(MapObject o : MapFragment.mapObjects)
             {
                 if(o instanceof MapMarker)
-                    nonPolygons.add(o);
+                {
+                    if (IncidentTypes.getIncidentType(o.getType()).isClickable())
+                        nonPolygons.add(o);
+                }
             }
             return nonPolygons;
         }

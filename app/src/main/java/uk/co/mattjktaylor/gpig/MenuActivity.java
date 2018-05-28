@@ -115,7 +115,6 @@ public class MenuActivity extends AppCompatActivity {
 
                 MapPolygon p = new MapPolygon(UUID.randomUUID().toString(), coords, descr);
                 mapFragment.addPolygon(p);
-                ClientUsage.sendPolygon(p);
                 return true;
 
             case R.id.action_settings:

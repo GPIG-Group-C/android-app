@@ -27,7 +27,9 @@ import io.socket.emitter.Emitter;
 public final class NotificationSocketListener implements Emitter.Listener {
 
     private static List<OnNotificationListener> listeners = new ArrayList<OnNotificationListener>();
-    private static Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngSerializer()).create();
+
+    public static Gson gson = new GsonBuilder().registerTypeAdapter(LatLng.class, new LatLngSerializer()).create();
+    public static Type coordListType = new TypeToken<ArrayList<LatLng>>(){}.getType();
 
     private static NotificationSocketListener instance;
     private NotificationSocketListener(){}
@@ -130,7 +132,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     JSONArray coordJson = params.getJSONArray("coords");
                     Type listType = new TypeToken<ArrayList<LatLng>>(){}.getType();
                     ArrayList<LatLng> coords = gson.fromJson(coordJson.toString(), listType);
-                    p.setCoords(coords);;
+                    p.setCoords(coords);
 
                     for (OnNotificationListener l : listeners)
                     {
@@ -142,9 +144,8 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     MapTransparentPolygon tP = gson.fromJson(params.toString(), MapTransparentPolygon.class);
                     // Parse coordinates seperately:
                     JSONArray tCoordJson = params.getJSONArray("coords");
-                    Type tListType = new TypeToken<ArrayList<LatLng>>(){}.getType();
-                    ArrayList<LatLng> tCoords = gson.fromJson(tCoordJson.toString(), tListType);
-                    tP.setCoords(tCoords);;
+                    ArrayList<LatLng> tCoords = gson.fromJson(tCoordJson.toString(), coordListType);
+                    tP.setCoords(tCoords);
 
                     for (OnNotificationListener l : listeners)
                     {
@@ -169,7 +170,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
 
     public static void updateSeverity(MapMarker m)
     {
-        if(m.getMarker() == null)
+        if(m.getMarker() == null || m.getDescription() == null)
             return;
 
         for(MapObject mo : MapFragment.mapObjects)
@@ -192,7 +193,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     else if(medicNeeded)
                         newSev = 6;
                     else
-                        newSev = 4;
+                        newSev = 3;
 
                     p.getDescription().getAreaInfo().setSeverity(newSev);
                     for (OnNotificationListener l : listeners)

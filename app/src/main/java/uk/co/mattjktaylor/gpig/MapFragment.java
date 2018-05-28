@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
@@ -35,6 +36,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -111,13 +113,25 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             {
                 try
                 {
-                    Gson gson = new Gson();
                     JSONArray stations = new JSONArray(json);
                     for (int i = 0; i < stations.length(); i++)
                     {
                         JSONObject station = stations.getJSONObject(i);
-                        MapMarker m = gson.fromJson(station.toString(), MapMarker.class);
-                        addMarker(m);
+                        JSONObject params = station.getJSONObject("params");
+                        if(station.get("method").equals("addMarker"))
+                        {
+                            MapMarker m = NotificationSocketListener.gson.fromJson(params.toString(), MapMarker.class);
+                            addMarker(m);
+                        }
+                        else if(station.get("method").equals("addTransparentPolygon"))
+                        {
+                            Config.log(params.toString());
+                            MapTransparentPolygon p = NotificationSocketListener.gson.fromJson(params.toString(), MapTransparentPolygon.class);
+                            JSONArray coords = params.getJSONArray("coords");
+                            ArrayList<LatLng> coordList = NotificationSocketListener.gson.fromJson(coords.toString(), NotificationSocketListener.coordListType);
+                            p.setCoords(coordList);
+                            addTransparentPolygon(p);
+                        }
                     }
                 }
                 catch (JSONException e)
@@ -168,7 +182,6 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                         return;
                     }
                 }
-
             }
         }
 
@@ -205,8 +218,8 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
     }
 
     public void centerMap() {
-        LatLng location = new LatLng(37.75961, -122.4269);
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(12).build();
+        LatLng location = new LatLng(37.75765, -122.43999);
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(13).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
@@ -270,6 +283,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     MapHeatMap hh = (MapHeatMap) mapObjects.get(index);
                     //hh.getMapMarker().getMarker().remove();
                     hh.getHeatmap().remove();
+                    mapObjects.remove(index);
                 }
                 mapObjects.add(h);
 
@@ -325,6 +339,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                     MapPolygon mp = (MapPolygon) mapObjects.get(index);
                     mp.getMarker().remove();
                     mp.getPolygon().remove();
+                    mapObjects.remove(index);
                 }
 
                 Config.log("Add polygon...");
@@ -353,6 +368,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
                 {
                     MapTransparentPolygon mp = (MapTransparentPolygon) mapObjects.get(index);
                     mp.getPolygon().remove();
+                    mapObjects.remove(index);
                 }
                 p.setPolygon(googleMap.addPolygon(p.getPolygonOptions()));
                 mapObjects.add(p);
