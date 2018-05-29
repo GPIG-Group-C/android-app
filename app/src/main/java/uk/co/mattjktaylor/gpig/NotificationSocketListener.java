@@ -152,6 +152,15 @@ public final class NotificationSocketListener implements Emitter.Listener {
                         l.addTransparentPolygon(tP);
                     }
                     break;
+
+                case "smartCityAction":
+                    JSONArray actionArray = params.getJSONArray("action");
+                    for(int i = 0; i < actionArray.length(); i++)
+                    {
+                        JSONObject action = actionArray.getJSONObject(i);
+                        parseJsonRpc(action);
+                    }
+                    break;
             }
         }
         catch(JSONException e)
