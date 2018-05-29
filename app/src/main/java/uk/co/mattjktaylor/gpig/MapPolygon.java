@@ -36,16 +36,16 @@ public class MapPolygon extends MapObject{
             int sev = getDescription().getAreaInfo().getSeverity();
             if(sev < 5)
             {
-                polyColour = blendColors(Color.rgb(255,153,0), Color.rgb(255,255,0), (sev/5f), 0x50);
+                polyColour = blendColors(Color.rgb(255,153,0), Color.rgb(255,255,0), (sev/5f), 0x64);
             }
             else
             {
-                polyColour = blendColors(Color.rgb(255,0,0), Color.rgb(255,153,0), ((sev-5)/5f), 0x50);
+                polyColour = blendColors(Color.rgb(255,0,0), Color.rgb(255,153,0), ((sev-5)/5f), 0x64);
             }
         }
 
         po.fillColor(polyColour);
-        po.strokeWidth(2);
+        po.strokeWidth(0);
         po.clickable(true);
 
         return po;
