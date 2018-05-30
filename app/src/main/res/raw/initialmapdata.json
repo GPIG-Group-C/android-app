@@ -147,7 +147,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "0acb3152-9247-4bb4-bb2e-c20cfcb44555",
-			"colour": "#b0279c",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.7661644,
@@ -212,7 +212,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "6c3ece14-eb92-4fa6-b359-ee8e18779864",
-			"colour": "#1427a5",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.7471989,
@@ -257,7 +257,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "abd4e02f-d3b4-4502-b7b4-284a6cf94875",
-			"colour": "#2bb4af",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.7660966,
@@ -310,7 +310,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "2eb3382c-b290-4b24-9921-65ad06787c2a",
-			"colour": "#0051e6",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.771287,
@@ -363,7 +363,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "81ef46bb-448d-4319-a5a2-46c2b0ed6f21",
-			"colour": "#9ceee6",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.771287,
@@ -408,7 +408,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "10854934-7053-4301-b2d0-f4c40f9e7346",
-			"colour": "#007cf5",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.7841471,
@@ -445,7 +445,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "21107bd7-adc1-481b-b73b-0f5b8bcea82e",
-			"colour": "#25a8f9",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.7789915,
@@ -482,7 +482,7 @@
 		"method": "addTransparentPolygon",
 		"params": {
 			"ID": "6787ef82-a6fc-4c18-8d29-a46d2641be09",
-			"colour": "#00d6ff",
+			"colour": "#5e5e5e",
 			"coords": [
 				{
 					"lat": 37.8072071,

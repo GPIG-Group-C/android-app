@@ -24,8 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.TileOverlay;
 import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.google.maps.android.heatmaps.WeightedLatLng;
@@ -36,9 +34,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MapFragment extends Fragment implements OnNotificationListener, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnPolygonClickListener, GoogleMap.OnInfoWindowClickListener, GoogleMap.OnMapLongClickListener {
 
@@ -103,7 +99,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         String json = null;
         try
         {
-            InputStream is = getResources().openRawResource(R.raw.fire_stations);
+            InputStream is = getResources().openRawResource(R.raw.initialmapdata);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
