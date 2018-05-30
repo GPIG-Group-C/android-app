@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import io.socket.emitter.Emitter;
@@ -98,6 +99,12 @@ public final class NotificationSocketListener implements Emitter.Listener {
         {
             String method = json.getString("method");
             JSONObject params = json.getJSONObject("params");
+
+            // Update time to use current time received:
+            JSONObject descr = params.getJSONObject("desc");
+            if(descr != null)
+                descr.put("dateAdded", Calendar.getInstance().getTimeInMillis());
+
             switch (method)
             {
                 case "addMarker":
