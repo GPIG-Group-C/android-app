@@ -32,18 +32,18 @@
         android:layout_marginBottom="10dp"/>
 
     <Switch
-        android:id="@+id/switch_danger"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="People in danger:" />
-
-    <Switch
         android:id="@+id/switch_medic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:text="Medic needed:" />
+
+    <Switch
+        android:id="@+id/switch_danger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:text="People in danger:" />
 
     <TextView
         android:id="@+id/text_description"

@@ -101,9 +101,11 @@ public final class NotificationSocketListener implements Emitter.Listener {
             JSONObject params = json.getJSONObject("params");
 
             // Update time to use current time received:
-            JSONObject descr = params.getJSONObject("desc");
-            if(descr != null)
+            if(params.has("desc"))
+            {
+                JSONObject descr = params.getJSONObject("desc");
                 descr.put("dateAdded", Calendar.getInstance().getTimeInMillis());
+            }
 
             switch (method)
             {
@@ -117,6 +119,7 @@ public final class NotificationSocketListener implements Emitter.Listener {
                     break;
 
                 case "addCircle":
+                    Config.log("addCircle");
                     MapCircle c = gson.fromJson(params.toString(), MapCircle.class);
                     for (OnNotificationListener l : listeners)
                     {

@@ -67,7 +67,7 @@ public class MenuActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.action_add_circle:
-                mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),"fire", 37.75961, -122.4269, 2500, Calendar.getInstance().getTimeInMillis()));
+                mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),"fire", 37.75961, -122.4269, 2, Calendar.getInstance().getTimeInMillis()));
                 return true;
 
             case R.id.action_add_marker:
