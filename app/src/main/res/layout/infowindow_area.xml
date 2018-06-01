@@ -23,9 +23,10 @@
         android:id="@+id/area_image"
         android:layout_width="fill_parent"
         android:layout_height="100dp"
-        android:maxHeight="100dp"
         android:layout_gravity="center"
+        android:maxHeight="100dp"
         android:padding="5dp"
+        android:visibility="gone"
         app:srcCompat="@drawable/san_fran" />
 
     <LinearLayout
