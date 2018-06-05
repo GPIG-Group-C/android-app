@@ -90,7 +90,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         {
             e.printStackTrace();
         }
-        centerMap();
+        centerMap(11);
         loadFireStations();
     }
 
@@ -213,9 +213,9 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         }
     }
 
-    public void centerMap() {
+    public void centerMap(int zoomLevel) {
         LatLng location = new LatLng(37.75765, -122.43999);
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(13).build();
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(location).zoom(zoomLevel).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 

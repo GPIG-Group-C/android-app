@@ -78,7 +78,7 @@ public class MenuActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_location:
-                mapFragment.centerMap();
+                mapFragment.centerMap(13);
                 return true;
 
             case R.id.action_add_heatmap:
