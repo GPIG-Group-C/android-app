@@ -76,6 +76,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
         googleMap.setOnInfoWindowClickListener(this);
         googleMap.setOnMarkerClickListener(this);
         googleMap.setOnPolygonClickListener(this);
+        googleMap.setIndoorEnabled(false);
 
         // Set map style:
         try

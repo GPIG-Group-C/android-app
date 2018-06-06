@@ -155,10 +155,11 @@
                 android:id="@+id/text_additional_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:maxLength="20"
+                android:singleLine="false"
+                android:maxLines="4"
+                android:maxWidth="140dp"
                 android:ellipsize="end"
-                tools:text="People trapped first floor" />
+                tools:text="People trapped first floor. People trapped first floor. People trapped first floor. People trapped first floor" />
 
         </LinearLayout>
 

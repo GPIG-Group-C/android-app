@@ -28,7 +28,7 @@ public class MapTransparentPolygon extends MapPolygon {
         po.add(coords.toArray(new LatLng[coords.size()]));
         po.strokePattern(Arrays.<PatternItem>asList(new Dash(15), new Gap(10)));
         po.strokeColor(Color.parseColor(colour));
-        po.strokeWidth(4);
+        po.strokeWidth(2);
         po.clickable(false);
         return po;
     }

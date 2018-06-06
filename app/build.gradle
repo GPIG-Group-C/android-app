@@ -29,7 +29,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.1'
     implementation 'com.android.support:design:27.1.1'
     // Fixes settings menu:
     implementation 'com.takisoft.fix:preference-v7:27.1.1.0'
@@ -40,7 +40,9 @@ dependencies {
     // Picasso images:
     api 'com.squareup.picasso:picasso:2.5.2'
     // Maps:
-    api "com.google.android.gms:play-services-maps:15.0.1"
+    implementation "com.google.android.gms:play-services-maps:15.0.1"
+    // Utils library for heatmaps
+    implementation 'com.google.maps.android:android-maps-utils:0.5+'
     // Socket.io
     api ('io.socket:socket.io-client:1.0.0') {
         // excluding org.json which is provided by Android
@@ -48,8 +50,7 @@ dependencies {
     }
     // Gson:
     api 'com.google.code.gson:gson:2.8.4'
-    // Utils library for heatmaps
-    api 'com.google.maps.android:android-maps-utils:0.5+'
+
     // Bottom sliding panel:
     repositories {
         mavenCentral()

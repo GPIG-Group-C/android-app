@@ -117,9 +117,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="47 Fake Road"
-                android:maxLines="1"
-                android:maxLength="30"
-                android:ellipsize="end"/>
+                android:singleLine="true"
+                android:maxWidth="140dp"
+                android:ellipsize="end"
+                android:maxLines="1" />
 
             <TextView
                 android:id="@+id/text_building_type"
