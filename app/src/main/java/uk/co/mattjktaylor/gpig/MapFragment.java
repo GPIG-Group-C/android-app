@@ -152,7 +152,7 @@ public class MapFragment extends Fragment implements OnNotificationListener, OnM
             return;
         }
 
-        IncidentDialog dialog = new IncidentDialog(getActivity(), this, latLng);
+        IncidentDialog dialog = new IncidentDialog(getActivity(), latLng);
         dialog.show();
     }
 

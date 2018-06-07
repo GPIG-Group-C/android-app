@@ -66,6 +66,17 @@ public class MenuActivity extends AppCompatActivity {
             return true;
 
         switch (item.getItemId()) {
+
+            case R.id.action_add_incident:
+                if(!Config.isFirstResponder(this))
+                {
+                    Toast.makeText(this, "You are not a first responder...", Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                IncidentDialog dialog = new IncidentDialog(this, new LatLng(37.75877, -122.43039));
+                dialog.show();
+                return true;
+
             case R.id.action_add_circle:
                 mapFragment.addCircle(new MapCircle(UUID.randomUUID().toString(),"fire", 37.75961, -122.4269, 2, Calendar.getInstance().getTimeInMillis()));
                 return true;

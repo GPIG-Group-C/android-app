@@ -22,14 +22,12 @@ public class IncidentDialog extends AlertDialog.Builder {
 
     private Activity activity;
     private LatLng coords;
-    private MapFragment map;
     private Marker marker;
 
-    public IncidentDialog(Activity activity, MapFragment map, LatLng coords)
+    public IncidentDialog(Activity activity, LatLng coords)
     {
         super(activity);
         this.activity = activity;
-        this.map = map;
         this.coords = coords;
         markerDialog();
     }
